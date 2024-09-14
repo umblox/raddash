@@ -1,0 +1,16 @@
+Minimalis billing dashboard pelanggan Arneta.ID
+
+Support untuk daloradius management, belum nyoba untuk RadMon/Radius Monitor
+Fix = Menerapkan keberadaan voucher sesuai plan dan profile
+Apa yang harus di lakukan :
+
+1. Masuk ke database radius lalu import radiusbilling.sql
+2. Register 1 akun untuk admin
+3. Kembali ke database radius dan buka table users. edit akun yang akan di jadikan admin tadi, lalu setting kolom is_admin menjadi 1
+4. Pasang url radiusbilling di loginpage agar mudah di akses pelanggan
+5. Coba register lagi sebagai akun pelanggan dan lakukan request topup
+6. Login lagi sebagai admin untuk melihat request topup dan mengambil tindakan konfirmasi jika sudah menerima pembayaran, atau tolak jika tidak menerima pembayaran
+7. Kedepan nya kan ada update biar ada notif telegram saat ada pelanggan request topup maupun saat pelanggan membeli voucher
+8. Juga akan update biar admin bisa konfirmasi topup melalui admin
+9. Setting prefix voucher di config/prefix.php sesuaikan prefix yang di inginkan dan sesuaikan dengan nama plan and daloradius
+10. Wajib menyamakan antara nama profile (Management_>Profiles) dan nama plans (Billing->Plans)
