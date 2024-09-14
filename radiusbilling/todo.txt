@@ -13,4 +13,4 @@ Apa yang harus di lakukan :
 7. Kedepan nya kan ada update biar ada notif telegram saat ada pelanggan request topup maupun saat pelanggan membeli voucher
 8. Juga akan update biar admin bisa konfirmasi topup melalui admin
 9. Setting prefix voucher di config/prefix.php sesuaikan prefix yang di inginkan dan sesuaikan dengan nama plan and daloradius
-10. Wajib menyamakan antara nama profile (Management_>Profiles) dan nama plans (Billing->Plans)
+10. Wajib menyamakan antara nama profile (Management->Profiles) dan nama plans (Billing->Plans)
