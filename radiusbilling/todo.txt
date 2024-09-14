@@ -4,7 +4,7 @@ Support untuk daloradius management, belum nyoba untuk RadMon/Radius Monitor
 Fix = Menerapkan keberadaan voucher sesuai plan dan profile
 Apa yang harus di lakukan :
 
-1. Masuk ke database radius lalu import radiusbilling.sql
+1. Masuk ke database radius lalu import radiusbilling.sql. jika pernah menginstall radiusbot dari saya, hal ini tidak perlu di lakukan
 2. Register 1 akun untuk admin
 3. Kembali ke database radius dan buka table users. edit akun yang akan di jadikan admin tadi, lalu setting kolom is_admin menjadi 1
 4. Pasang url radiusbilling di loginpage agar mudah di akses pelanggan
