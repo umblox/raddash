@@ -1,6 +1,6 @@
 <?php
 function getVoucherPrefix($planName) {
-    // Array prefix voucher berdasarkan nama plan
+    // sesuaikan prefix voucher berdasarkan nama plan anda
     $VOUCHER_PREFIX = [
         '1Hari' => '3k',
         '5k' => '5k',
