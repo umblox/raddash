@@ -1,4 +1,15 @@
-<?php session_start();
+<?php
+/*
+*******************************************************************************************************************
+* Warning!!!, Tidak untuk diperjual belikan!, Cukup pakai sendiri atau share kepada orang lain secara gratis
+*******************************************************************************************************************
+* Dibuat oleh Ikromul Umam https://t.me/arnetadotid
+*******************************************************************************************************************
+* © 2024 Arneta.ID By https://fb.me/umblox
+*******************************************************************************************************************
+*/
+
+session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
