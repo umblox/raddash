@@ -1,4 +1,5 @@
 <?php
+
 /*
 *******************************************************************************************************************
 * Warning!!!, Tidak untuk diperjual belikan!, Cukup pakai sendiri atau share kepada orang lain secara gratis
@@ -51,7 +52,6 @@ ob_end_flush();
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
-    <link rel="stylesheet" href="/radiusbilling/css/styles.css">
     <style>
         #countdown {
             font-weight: bold;
@@ -60,18 +60,35 @@ ob_end_flush();
     </style>
 </head>
 <body>
-    <h1>Register</h1>
-    <?php if ($success) { echo "<p style='color: green;'>$success</p>"; } ?>
-    <?php if ($error) { echo "<p style='color: red;'>$error</p>"; } ?>
-    <form method="post" action="register.php">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="login.php">Login here</a></p>
-
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>Register</h4>
+                    </div>
+                    <div class="card-body">
+                        <?php if ($success) { echo "<div class='alert alert-success'>$success</div>"; } ?>
+                        <?php if ($error) { echo "<div class='alert alert-danger'>$error</div>"; } ?>
+                        <form method="post" action="register.php">
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                <input type="text" id="username" name="username" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" id="password" name="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        <p>Already have an account? <a href="login.php">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         // Countdown timer
         var countdownElement = document.getElementById('countdown');
