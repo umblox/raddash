@@ -108,9 +108,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/radiusbilling/css/styles.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/radiusbilling/assets/css/bootstrap.min.css">
     <style>
+        body {
+            padding-top: 56px; /* Mengatur padding atas untuk menghindari header fixed */
+        }
         .notification {
             display: none;
             background-color: #f1f1f1;
@@ -134,26 +139,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         .bell-icon.active {
             color: red;
         }
+        .container {
+            margin-top: 20px;
+        }
+        .btn-custom {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
     <?php include '/www/radiusbilling/views/header.php'; ?>
 
-    <h1>Selamat Datang</h1>
-    <p>
-        Hello, <?php echo htmlspecialchars($username); ?>!
+    <div class="container">
+        <h1>Selamat Datang</h1>
+        <p>Hello, <?php echo htmlspecialchars($username); ?>!</p>
+        
         <?php if ($show_bell): ?>
             <span id="bell" class="bell-icon active">🔔</span>
             <span id="notification_count"><?php echo $notification_count; ?> pesan baru</span>
         <?php endif; ?>
-    </p>
+        
+        <?php if ($notification_message_encoded): ?>
+            <div id="notification" class="notification">
+                <p><?php echo $notification_message_encoded; ?></p>
+                <button class="btn btn-primary" onclick="hideNotification()">Tutup</button>
+            </div>
+        <?php endif; ?>
 
-    <?php if ($notification_message_encoded): ?>
-        <div id="notification" class="notification">
-            <p><?php echo $notification_message_encoded; ?></p>
-            <button onclick="hideNotification()">Tutup</button>
-        </div>
-    <?php endif; ?>
+        <p>Your current balance is: Rp. <?php echo htmlspecialchars(number_format($balance, 2)); ?></p>
+
+        <?php if ($role !== 'admin'): ?>
+            <a href="/radiusbilling/transactions/topup.php" class="btn btn-primary">Top Up</a>
+            <a href="/radiusbilling/transactions/purchase.php" class="btn btn-secondary">Purchase Plan</a>
+        <?php endif; ?>
+
+        <a href="logout.php" class="btn btn-danger">Logout</a>
+    </div>
 
     <script>
         // Show notification on bell click
@@ -192,19 +213,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             });
         }
     </script>
-
-    <p>Your current balance is: Rp. <?php echo htmlspecialchars(number_format($balance, 2)); ?></p>
-
-    <?php if ($role === 'admin'): ?>
-        <!-- Admin access should be redirected to the admin page -->
-        <script>
-            window.location.href = 'admin.php';
-        </script>
-    <?php else: ?>
-        <a href="/radiusbilling/transactions/topup.php">Top Up</a>
-        <a href="/radiusbilling/transactions/purchase.php">Purchase Plan</a>
-    <?php endif; ?>
-
-    <a href="logout.php">Logout</a>
 </body>
 </html>
