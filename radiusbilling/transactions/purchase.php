@@ -71,13 +71,14 @@ if ($action == 'confirm' && !empty($plan_id)) {
     if ($result->num_rows > 0) {
         $plan = $result->fetch_assoc();
 
-        echo '<h1>Konfirmasi Pembelian</h1>';
-        echo 'Paket yang Anda pilih: ' . htmlspecialchars($plan['planName']) . '<br>';
-        echo 'Harga: ' . htmlspecialchars($plan['planCost']) . '<br>';
-        echo '<a href="purchase.php?action=purchase&plan_id=' . urlencode($plan_id) . '">Konfirmasi</a> | ';
-        echo '<a href="purchase.php">Batal</a><br><br><br><br><br><br><br><br><br><br><br><br>';
-        // Tambahkan tombol kembali ke dashboard di sini
-        echo '<a href="/radiusbilling/views/dashboard.php">Kembali ke Dashboard</a>';
+        echo '<div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">';
+        echo '<h1 style="font-size: 24px; color: #333; margin-bottom: 20px;">Konfirmasi Pembelian</h1>';
+        echo '<p style="font-size: 18px; color: #555;">Paket yang Anda pilih: <strong>' . htmlspecialchars($plan['planName']) . '</strong></p>';
+        echo '<p style="font-size: 18px; color: #555;">Harga: <strong>' . htmlspecialchars($plan['planCost']) . '</strong></p>';
+        echo '<a href="purchase.php?action=purchase&plan_id=' . urlencode($plan_id) . '" style="display: inline-block; padding: 10px 20px; margin-right: 10px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px;">Konfirmasi</a>';
+        echo '<a href="purchase.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #6c757d; text-decoration: none; border-radius: 4px;">Batal</a><br><br>';
+        echo '<a href="/radiusbilling/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
+        echo '</div>';
     } else {
         echo 'Paket tidak ditemukan.';
     }
@@ -122,9 +123,20 @@ if ($action == 'confirm' && !empty($plan_id)) {
         $connection->close();
         exit();
     } elseif ($user['balance'] < $plan['planCost']) {
-        echo 'Saldo Anda tidak mencukupi.<br>';
-        echo 'Saldo saat ini: ' . htmlspecialchars($user['balance']) . '<br>';
-        $connection->rollback(); // Batalkan transaksi
+// Display the insufficient balance message with background
+echo '<div style="background-color: #ffdddd; padding: 15px; border-radius: 8px; border: 1px solid #ff5c5c; max-width: 400px; margin: 20px auto; text-align: center;">';
+echo '<p style="font-size: 16px; color: #d9534f;">Saldo Anda tidak mencukupi.</p>';
+echo '<p style="font-size: 16px; color: #333;">Saldo saat ini: <strong>' . htmlspecialchars($user['balance']) . '</strong></p>';
+echo '</div>';
+
+// Rollback the transaction
+$connection->rollback(); 
+
+// Display the rollback message with consistent styling
+echo '<div style="background-color: #f7f7f7; padding: 15px; border-radius: 8px; border: 1px solid #ccc; max-width: 400px; margin: 20px auto; text-align: center;">';
+echo '<p style="font-size: 16px; color: #555;">Transaksi telah dibatalkan.</p>';
+echo '</div>';
+
         $stmt->close();
         $connection->close();
         exit();
@@ -183,18 +195,22 @@ if ($action == 'confirm' && !empty($plan_id)) {
         $login_url = "http://10.10.10.1:3990/login?username=" . urlencode($voucher_code) . "&password=Accept";
 
         // Tampilkan pesan sukses dan tombol kembali
-        echo '<h2>Voucher Anda telah dibuat!</h2>';
-        echo 'Menggunakan username: ' . htmlspecialchars($telegram_username) . '<br>';
-        echo 'Voucher Anda: ' . htmlspecialchars($voucher_code) . '<br>';
-        echo 'Sisa saldo Anda sekarang: ' . htmlspecialchars($new_balance) . '<br>';
-        echo '<a href="' . htmlspecialchars($login_url) . '">Login</a><br><br>';
-        echo '<a href="/radiusbilling/views/dashboard.php">Kembali ke Dashboard</a>';
+        echo '<div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">';
+        echo '<h1 style="font-size: 24px; color: #333; margin-bottom: 20px;">Pembelian Sukses</h1>';
+        echo '<p style="font-size: 18px; color: #555;">Kode Voucher Anda: <strong>' . htmlspecialchars($voucher_code) . '</strong></p>';
+        echo '<p style="font-size: 18px; color: #555;">Sisa Saldo: <strong>' . htmlspecialchars($new_balance) . '</strong></p>';
+        echo '<a href="' . htmlspecialchars($login_url) . '" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px;">Login</a>';
+        echo '<br><br>';
+        echo '<a href="/radiusbilling/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
+        echo '</div>';
     }
 
     $stmt->close();
     $connection->close();
 } else {
-    // Periksa saldo pengguna berdasarkan username
+    echo '<div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">';
+
+    // Tampilkan saldo saat ini
     $stmt = $connection->prepare("SELECT balance FROM users WHERE username = ?");
     if (!$stmt) {
         die('Prepare failed: ' . $connection->error);
@@ -203,54 +219,69 @@ if ($action == 'confirm' && !empty($plan_id)) {
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
-    $balance = $user ? $user['balance'] : 0;
+echo '<div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #cce7ff; max-width: 400px; margin: 20px auto; text-align: center;">';
+echo '<p style="font-size: 18px; color: #555;">Saldo saat ini: <strong>' . htmlspecialchars($user['balance']) . '</strong></p>';
+echo '</div>';
 
-    // Tampilkan sisa saldo di bagian atas daftar paket
-    echo '<div style="font-size: 24px; font-weight: bold; color: #4CAF50; margin-bottom: 20px;">';
-    echo 'Sisa Saldo Anda: ' . htmlspecialchars($balance) . ' Kredit';
-    echo '</div>';
-
-    // Menampilkan paket yang tersedia
-    $query = "SELECT id, planName, planCost FROM billing_plans WHERE planCost > 0";
-    $result = $connection->query($query);
+    // Tampilkan daftar paket
+    $stmt = $connection->prepare("SELECT id, planName, planCost FROM billing_plans WHERE planCost > 0");
+    if (!$stmt) {
+        die('Prepare failed: ' . $connection->error);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        echo '<h2>Pilih Paket yang Ingin Dibeli</h2>';
-        while ($row = $result->fetch_assoc()) {
-            echo '<div>';
-            echo htmlspecialchars($row['planName']) . ' - ' . htmlspecialchars($row['planCost']) . ' Kredit<br>';
-            echo '<a href="purchase.php?action=confirm&plan_id=' . urlencode($row['id']) . '">Beli</a>';
-            echo '</div>';
+echo '<div style="max-width: 400px; margin: 0 auto; padding: 15px;">';
+echo '<h2 style="font-size: 18px; color: #333; margin-bottom: 15px; text-align: center;">Pilih Paket yang Ingin Dibeli</h2>';
+
+while ($plan = $result->fetch_assoc()) {
+    echo '<div style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 12px; background-color: #257CFD; text-align: center;">';
+    echo '<p style="font-size: 14px; color: #fff; margin-bottom: 8px;">Paket: <strong>' . htmlspecialchars($plan['planName']) . '</strong></p>';
+    echo '<p style="font-size: 14px; color: #fff; margin-bottom: 12px;">Harga: <strong>' . htmlspecialchars($plan['planCost']) . '</strong></p>';
+    echo '<a href="purchase.php?action=confirm&plan_id=' . urlencode($plan['id']) . '" style="display: inline-block; padding: 8px 16px; color: #fff; background-color: #0ACA7D; text-decoration: none; border-radius: 4px; font-size: 14px;">Beli</a>';
+    echo '</div>';
         }
     } else {
         echo 'Tidak ada paket yang tersedia.';
     }
 
-    echo '<h2>Daftar Voucher Terakhir</h2>';
-
-    // Tampilkan daftar 3 voucher terakhir yang dibeli berdasarkan creationby
+    // Tampilkan daftar voucher terakhir
     $stmt = $connection->prepare("SELECT username, creationdate FROM userinfo WHERE creationby = ? ORDER BY creationdate DESC LIMIT 3");
     if (!$stmt) {
         die('Prepare failed: ' . $connection->error);
     }
+
     $createdby_value = $telegram_username . '@RadiusBilling';
     $stmt->bind_param('s', $createdby_value);
     $stmt->execute();
     $result = $stmt->get_result();
 
+
     if ($result->num_rows > 0) {
-        echo '<ul>';
-        while ($row = $result->fetch_assoc()) {
-            echo '<li>Voucher: ' . htmlspecialchars($row['username']) . ' - Tanggal: ' . htmlspecialchars($row['creationdate']) . '</li>';
-        }
-        echo '</ul>';
+echo '<div style="max-width: 400px; margin: 0 auto; padding: 15px;">';
+echo '<h2 style="font-size: 18px; color: #333; margin-bottom: 15px; text-align: center;">Tiga Voucher Terakhir Anda</h2>';
+echo '<ul style="list-style-type: none; padding: 0; margin: 0;">';
+
+while ($voucher = $result->fetch_assoc()) {
+    echo '<li style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 12px; background-color: #0ACA7D; text-align: center;">';
+    echo '<p style="font-size: 14px; color: #fff; margin-bottom: 8px;">Voucher: <strong>' . htmlspecialchars($voucher['username']) . '</strong></p>';
+    echo '<p style="font-size: 14px; color: #fff; margin-bottom: 8px;">Tanggal: <strong>' . htmlspecialchars($voucher['creationdate']) . '</strong></p>';
+    echo '</li>';
+}
+
+echo '</ul>';
+echo '</div>';
+
     } else {
-        echo 'Tidak ada voucher terakhir.';
+        echo 'Tidak ada voucher terbaru.';
     }
+
+    echo '<br>';
+    echo '<a href="/radiusbilling/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #257CFD; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
+    echo '</div>';
 
     $stmt->close();
     $connection->close();
-    // Tambahkan tombol kembali ke dashboard di sini
-    echo '<a href="/radiusbilling/views/dashboard.php">Kembali ke Dashboard</a>';
 }
 ?>
