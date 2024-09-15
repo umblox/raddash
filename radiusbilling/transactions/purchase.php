@@ -32,6 +32,14 @@ error_reporting(E_ALL);
 // Mengambil username dari session jika sudah ada
 $telegram_username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 
+// Buat token transaksi dan simpan di session jika belum ada
+if (!isset($_SESSION['transaction_token'])) {
+    $_SESSION['transaction_token'] = bin2hex(random_bytes(32));  // Token acak
+}
+
+// Simpan token di variabel untuk digunakan
+$transaction_token = $_SESSION['transaction_token'];
+
 // Fungsi untuk membuat kode voucher dengan prefix yang sesuai
 function generate_voucher_code($planName, $connection) {
     do {
@@ -75,7 +83,7 @@ if ($action == 'confirm' && !empty($plan_id)) {
         echo '<h1 style="font-size: 24px; color: #333; margin-bottom: 20px;">Konfirmasi Pembelian</h1>';
         echo '<p style="font-size: 18px; color: #555;">Paket yang Anda pilih: <strong>' . htmlspecialchars($plan['planName']) . '</strong></p>';
         echo '<p style="font-size: 18px; color: #555;">Harga: <strong>' . htmlspecialchars($plan['planCost']) . '</strong></p>';
-        echo '<a href="purchase.php?action=purchase&plan_id=' . urlencode($plan_id) . '" style="display: inline-block; padding: 10px 20px; margin-right: 10px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px;">Konfirmasi</a>';
+        echo '<a href="purchase.php?action=purchase&plan_id=' . urlencode($plan_id) . '&token=' . $transaction_token . '" style="display: inline-block; padding: 10px 20px; margin-right: 10px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px;">Konfirmasi</a>';
         echo '<a href="purchase.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #6c757d; text-decoration: none; border-radius: 4px;">Batal</a><br><br>';
         echo '<a href="/radiusbilling/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
         echo '</div>';
@@ -86,6 +94,17 @@ if ($action == 'confirm' && !empty($plan_id)) {
     $stmt->close();
     $connection->close();
 } elseif ($action == 'purchase' && !empty($plan_id) && !empty($telegram_username)) {
+    // Cek token untuk mencegah double purchase
+    if (!isset($_GET['token']) || $_GET['token'] !== $_SESSION['transaction_token']) {
+    echo '<p>Token transaksi tidak valid atau telah kadaluarsa.</p>';
+    echo '<p>Jika saldo Anda tidak terpotong dan voucher belum muncul, Anda bisa mengulangi proses pembelian.</p>';
+
+    // Tombol kembali ke dashboard
+    echo '<a href="/radiusbilling/views/dashboard.php" class="btn btn-primary">Kembali ke Dashboard</a>';
+        exit();
+    }
+
+    // Jika token valid, lanjutkan dengan proses transaksi
     $connection->autocommit(FALSE); // Mulai transaksi
 
     // Ambil informasi paket
@@ -190,6 +209,8 @@ echo '</div>';
         $stmt->execute();
 
         $connection->commit(); // Selesaikan transaksi
+        // Set session token ke NULL untuk mencegah penggunaan ganda
+        unset($_SESSION['transaction_token']);
 
         // URL Login Voucher
         $login_url = "http://10.10.10.1:3990/login?username=" . urlencode($voucher_code) . "&password=Accept";
