@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isAdmin && isset($_POST['amount']
     $amount = floatval($_POST['amount']);
 
     // Daftar jumlah top-up default
-    $defaultAmounts = [5000, 10000, 20000, 50000, 100000];
+    $defaultAmounts = [3000, 5000, 10000, 20000, 50000, 100000];
 
     if (!in_array($amount, $defaultAmounts)) {
         $_SESSION['status_message'] = "Jumlah top-up tidak valid. Pilih jumlah yang sesuai.";
@@ -264,63 +264,108 @@ if (!$isAdmin) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Up Arneta.ID</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Top-Up Saldo Pelanggan Arneta.ID</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/radiusbilling/assets/css/bootstrap.min.css">
+    <style>
+        .topup-form-container {
+            max-width: 400px; /* Membatasi lebar form */
+            margin: 0 auto; /* Menempatkan form di tengah */
+            padding: 20px;
+            background-color: #d0efff; /* Latar belakang biru muda */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .topup-form-container label {
+            font-weight: bold;
+            color: blue;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <?php if ($isAdmin): ?>
-        <h1>Permintaan Top-Up</h1>
-        <?php
-        $query = 'SELECT username, amount, created_at, status FROM topup_requests WHERE status = "pending" ORDER BY created_at DESC';
-        $result = $db->query($query);
-        if ($result->num_rows > 0): ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Jumlah</th>
-                        <th>Tanggal</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($row['username']); ?></td>
-                            <td><?php echo htmlspecialchars($row['amount']); ?></td>
-                            <td><?php echo htmlspecialchars($row['created_at']); ?></td>
-                            <td>
-                                <a href="?action=confirm&username=<?php echo urlencode($row['username']); ?>&amount=<?php echo urlencode($row['amount']); ?>">Konfirmasi</a>
-                                <a href="?action=reject&username=<?php echo urlencode($row['username']); ?>&amount=<?php echo urlencode($row['amount']); ?>">Tolak</a>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        <?php else: ?>
-            <p>Belum ada permintaan top-up.</p>
-        <?php endif; ?>
-    <?php else: ?>
-        <h1>Top Up Saldo Arneta.ID</h1>
-        <p>Saldo Anda saat ini: <?php echo htmlspecialchars($balance); ?></p>
-        <?php if ($pendingRequest): ?>
-            <p><?php echo htmlspecialchars($statusMessage); ?></p>
-            <form action="/radiusbilling/views/dashboard.php" method="GET">
-                <button type="submit">Kembali ke Dashboard</button>
-            </form>
-        <?php else: ?>
+    <header>
+        <!-- Menggunakan Bootstrap class untuk styling header -->
+        <div class="bg-primary text-white text-center py-4">
+            <?php if ($isAdmin): ?>
+                <h1 class="display-4">Permintaan Top-Up</h1>
+                <?php
+                $query = 'SELECT username, amount, created_at, status FROM topup_requests WHERE status = "pending" ORDER BY created_at DESC';
+                $result = $db->query($query);
+                if ($result->num_rows > 0): ?>
+                    <table class="table table-striped table-bordered mt-4">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Username</th>
+                                <th>Jumlah</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($row['username']); ?></td>
+                                    <td>Rp <?php echo number_format($row['amount'], 0, ',', '.'); ?></td>
+                                    <td><?php echo htmlspecialchars($row['created_at']); ?></td>
+                                    <td>
+                                        <a href="?action=confirm&username=<?php echo urlencode($row['username']); ?>&amount=<?php echo urlencode($row['amount']); ?>" class="btn btn-success btn-sm">Konfirmasi</a>
+                                        <a href="?action=reject&username=<?php echo urlencode($row['username']); ?>&amount=<?php echo urlencode($row['amount']); ?>" class="btn btn-danger btn-sm">Tolak</a>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p class="mt-4">Belum ada permintaan top-up.</p>
+                <?php endif; ?>
+            <?php else: ?>
+                <h1 class="display-4">Top Up Saldo Arneta.ID</h1>
+                <p class="lead">Saldo Anda saat ini: Rp <?php echo number_format($balance, 0, ',', '.'); ?></p>
+                <?php if ($pendingRequest): ?>
+                    <div class="alert alert-info mt-4" role="alert">
+                        <?php echo htmlspecialchars($statusMessage); ?>
+                    </div>
+                    <form action="/radiusbilling/views/dashboard.php" method="GET" class="mt-4">
+                        <button type="submit" class="btn btn-primary">Kembali ke Dashboard</button>
+                    </form>
+                <?php else: ?>
+    <div class="container mt-5">
+        <div class="topup-form-container">
             <form action="topup.php" method="POST">
-                <label for="amount">Jumlah Top-Up:</label>
-                <select id="amount" name="amount" required>
-                    <option value="5000">5000</option>
-                    <option value="10000">10000</option>
-                    <option value="20000">20000</option>
-                    <option value="50000">50000</option>
-                    <option value="100000">100000</option>
-                </select>
-                <button type="submit">Kirim Permintaan</button>
+                <div class="form-group text-center">
+                    <label for="amount">Jumlah Top-Up:</label>
+                    <select id="amount" name="amount" class="form-control" required>
+                        <option value="3000">Rp 3,000</option>
+                        <option value="5000">Rp 5,000</option>
+                        <option value="10000">Rp 10,000</option>
+                        <option value="20000">Rp 20,000</option>
+                        <option value="50000">Rp 50,000</option>
+                        <option value="100000">Rp 100,000</option>
+                    </select>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-custom">Kirim Permintaan</button>
+                </div>
             </form>
-        <?php endif; ?>
-    <?php endif; ?>
+        </div>
+    </div>
+            <?php endif; ?>
+            <?php endif; ?>
+        </div>
+    </header>
+
+    <!-- Bootstrap JS (opsional jika diperlukan interaksi JS Bootstrap) -->
+    <script src="/radiusbilling/assets/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
