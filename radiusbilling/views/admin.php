@@ -10,6 +10,8 @@
 */
 
 session_start();
+
+include '/www/radiusbilling/views/header.php';
 require_once '/www/radiusbilling/config/database.php';
 
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
@@ -38,16 +40,30 @@ $db->close();
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Welcome to Admin Panel</h1>
-    <?php if ($pendingCount > 0): ?>
-        <p>You have <?php echo htmlspecialchars($pendingCount); ?> pending top-up request(s).</p>
-        <a href="/radiusbilling/transactions/topup.php">View Top-Up Requests</a>
-    <?php else: ?>
-        <p>No pending top-up requests at the moment.</p>
-    <?php endif; ?>
-    <a href="logout.php">Logout</a>
+    <div class="container mt-5">
+        <h1 class="text-center">Welcome to Admin Panel</h1>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>Dashboard</h4>
+                    </div>
+                    <div class="card-body">
+                        <?php if ($pendingCount > 0): ?>
+                            <p>You have <?php echo htmlspecialchars($pendingCount); ?> pending top-up request(s).</p>
+                            <a href="/radiusbilling/transactions/topup.php" class="btn btn-primary">View Top-Up Requests</a>
+                        <?php else: ?>
+                            <p class="text-success">No pending top-up requests at the moment.</p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="logout.php" class="btn btn-danger">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
