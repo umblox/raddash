@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="/radiusbilling/assets/css/bootstrap.min.css">
     <style>
         body {
-            padding-top: 56px; /* Mengatur padding atas untuk menghindari header fixed */
+            padding-top: 5px; /* Mengatur padding atas untuk menghindari header fixed */
         }
         .notification {
             display: none;
