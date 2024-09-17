@@ -14,7 +14,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '/www/radiusbilling/config/database.php';
+require_once '/www/raddash/config/database.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -28,7 +28,7 @@ if (!$db) {
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['username'])) {
-    header('Location: /radiusbilling/views/login.php');
+    header('Location: /raddash/views/login.php');
     exit();
 }
 
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isAdmin && isset($_POST['amount']
 
     if (!in_array($amount, $defaultAmounts)) {
         $_SESSION['status_message'] = "Jumlah top-up tidak valid. Pilih jumlah yang sesuai.";
-        header('Location: /radiusbilling/transactions/topup.php');
+        header('Location: /raddash/transactions/topup.php');
         exit();
     }
 
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isAdmin && isset($_POST['amount']
 
     if ($count > 0) {
         $_SESSION['status_message'] = "Anda sudah memiliki permintaan top-up yang menunggu konfirmasi untuk jumlah ini.";
-        header('Location: /radiusbilling/transactions/topup.php');
+        header('Location: /raddash/transactions/topup.php');
         exit();
     }
 
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isAdmin && isset($_POST['amount']
     $stmt->close();
 
     $_SESSION['status_message'] = "Permintaan top-up sebesar $amount kredit sedang menunggu konfirmasi admin.";
-    header('Location: /radiusbilling/transactions/topup.php');
+    header('Location: /raddash/transactions/topup.php');
     exit();
 }
 
@@ -178,7 +178,7 @@ if ($isAdmin && isset($_GET['action']) && isset($_GET['username']) && isset($_GE
         } else {
             $_SESSION['status_message'] = "Data top-up tidak ditemukan atau sudah diproses.";
         }
-        header('Location: /radiusbilling/views/admin.php');
+        header('Location: /raddash/views/admin.php');
         exit();
     } elseif ($action === 'reject') {
         // Cek apakah permintaan top-up ada
@@ -212,11 +212,11 @@ if ($isAdmin && isset($_GET['action']) && isset($_GET['username']) && isset($_GE
         } else {
             $_SESSION['status_message'] = "Data top-up tidak ditemukan atau sudah diproses.";
         }
-        header('Location: /radiusbilling/views/admin.php');
+        header('Location: /raddash/views/admin.php');
         exit();
     } else {
         $_SESSION['status_message'] = "Aksi tidak dikenal atau Anda tidak memiliki izin.";
-        header('Location: /radiusbilling/views/admin.php');
+        header('Location: /raddash/views/admin.php');
         exit();
     }
 }
@@ -266,7 +266,7 @@ if (!$isAdmin) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top-Up Saldo Pelanggan Arneta.ID</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/radiusbilling/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/raddash/assets/css/bootstrap.min.css">
     <style>
         .topup-form-container {
             max-width: 400px; /* Membatasi lebar form */
@@ -335,7 +335,7 @@ if (!$isAdmin) {
                     <div class="alert alert-info mt-4" role="alert">
                         <?php echo htmlspecialchars($statusMessage); ?>
                     </div>
-                    <form action="/radiusbilling/views/dashboard.php" method="GET" class="mt-4">
+                    <form action="/raddash/views/dashboard.php" method="GET" class="mt-4">
                         <button type="submit" class="btn btn-primary">Kembali ke Dashboard</button>
                     </form>
                 <?php else: ?>
@@ -365,7 +365,7 @@ if (!$isAdmin) {
     </header>
 
     <!-- Bootstrap JS (opsional jika diperlukan interaksi JS Bootstrap) -->
-    <script src="/radiusbilling/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/raddash/assets/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
