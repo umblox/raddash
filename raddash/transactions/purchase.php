@@ -16,13 +16,13 @@ error_reporting(E_ALL);
 
 // Redirect jika pengguna belum login
 if (!isset($_SESSION['username'])) {
-    header("Location: /radiusbilling/views/login.php");
+    header("Location: /raddash/views/login.php");
     exit();
 }
 
-include '/www/radiusbilling/views/header.php';
-require '/www/radiusbilling/config/database.php';  // Menghubungkan dengan konfigurasi database
-require '/www/radiusbilling/config/prefix.php';    // Menghubungkan dengan konfigurasi prefix voucher
+include '/www/raddash/views/header.php';
+require '/www/raddash/config/database.php';  // Menghubungkan dengan konfigurasi database
+require '/www/raddash/config/prefix.php';    // Menghubungkan dengan konfigurasi prefix voucher
 
 // Mengaktifkan error reporting untuk debugging
 ini_set('display_errors', 1);
@@ -85,7 +85,7 @@ if ($action == 'confirm' && !empty($plan_id)) {
         echo '<p style="font-size: 18px; color: #555;">Harga: <strong>' . htmlspecialchars($plan['planCost']) . '</strong></p>';
         echo '<a href="purchase.php?action=purchase&plan_id=' . urlencode($plan_id) . '&token=' . $transaction_token . '" style="display: inline-block; padding: 10px 20px; margin-right: 10px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px;">Konfirmasi</a>';
         echo '<a href="purchase.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #6c757d; text-decoration: none; border-radius: 4px;">Batal</a><br><br>';
-        echo '<a href="/radiusbilling/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
+        echo '<a href="/raddash/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
         echo '</div>';
     } else {
         echo 'Paket tidak ditemukan.';
@@ -100,7 +100,7 @@ if ($action == 'confirm' && !empty($plan_id)) {
     echo '<p>Jika saldo Anda tidak terpotong dan voucher belum muncul, Anda bisa mengulangi proses pembelian.</p>';
 
     // Tombol kembali ke dashboard
-    echo '<a href="/radiusbilling/views/dashboard.php" class="btn btn-primary">Kembali ke Dashboard</a>';
+    echo '<a href="/raddash/views/dashboard.php" class="btn btn-primary">Kembali ke Dashboard</a>';
         exit();
     }
 
@@ -191,7 +191,7 @@ echo '</div>';
 
         // Insert ke userinfo
         $creation_date = date('Y-m-d H:i:s');
-        $creationby_value = $telegram_username . '@RadiusBilling';
+        $creationby_value = $telegram_username . '@raddash';
         $stmt = $connection->prepare("INSERT INTO userinfo (username, creationdate, creationby) VALUES (?, ?, ?)");
         if (!$stmt) {
             die('Prepare failed: ' . $connection->error);
@@ -223,7 +223,7 @@ echo '<span class="voucher-text" style="font-size: 18px; color: #007bff; cursor:
 echo '</p>';
 echo '<p style="font-size: 18px; color: #555; margin-bottom: 20px;">Sisa Saldo: <strong>' . htmlspecialchars($new_balance) . '</strong></p>';
 echo '<a href="' . htmlspecialchars($login_url) . '" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px; margin-right: 10px;">Login</a>';
-echo '<a href="/radiusbilling/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
+echo '<a href="/raddash/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
 echo '</div>';
 
 echo '<script>
@@ -298,7 +298,7 @@ while ($plan = $result->fetch_assoc()) {
         die('Prepare failed: ' . $connection->error);
     }
 
-    $createdby_value = $telegram_username . '@RadiusBilling';
+    $createdby_value = $telegram_username . '@raddash';
     $stmt->bind_param('s', $createdby_value);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -354,7 +354,7 @@ function copyVoucherText(element) {
     }
 
     echo '<br>';
-    echo '<a href="/radiusbilling/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #257CFD; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
+    echo '<a href="/raddash/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #257CFD; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
     echo '</div>';
 
     $stmt->close();
