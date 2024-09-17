@@ -14,7 +14,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '/www/radiusbilling/config/database.php';
+require_once '/www/raddash/config/database.php';
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['username'])) {
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/radiusbilling/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/raddash/assets/css/bootstrap.min.css">
     <style>
         body {
             padding-top: 5px; /* Mengatur padding atas untuk menghindari header fixed */
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     </style>
 </head>
 <body>
-    <?php include '/www/radiusbilling/views/header.php'; ?>
+    <?php include '/www/raddash/views/header.php'; ?>
 
     <div class="container">
         <h1>Selamat Datang</h1>
@@ -169,8 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <p>Your current balance is: Rp. <?php echo htmlspecialchars(number_format($balance, 2)); ?></p>
 
         <?php if ($role !== 'admin'): ?>
-            <a href="/radiusbilling/transactions/topup.php" class="btn btn-primary">Top Up</a>
-            <a href="/radiusbilling/transactions/purchase.php" class="btn btn-secondary">Purchase Plan</a>
+            <a href="/raddash/transactions/topup.php" class="btn btn-primary">Top Up</a>
+            <a href="/raddash/transactions/purchase.php" class="btn btn-secondary">Purchase Plan</a>
         <?php endif; ?>
 
         <a href="logout.php" class="btn btn-danger">Logout</a>
