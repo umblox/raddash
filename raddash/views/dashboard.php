@@ -71,9 +71,9 @@ if ($topup_request) {
     if ($status === 'rejected' || $status === 'confirmed') {
         $notification_message = '';
         if ($status === 'rejected') {
-            $notification_message = "Permintaan Anda sebesar Rp. " . number_format($amount, 2) . " telah ditolak. Silakan coba lagi.";
+            $notification_message = "Permintaan Top-Up Anda sebesar Rp. " . number_format($amount, 2) . " telah ditolak. Silakan coba lagi.";
         } elseif ($status === 'confirmed') {
-            $notification_message = "Permintaan Anda sebesar Rp. " . number_format($amount, 2) . " telah dikonfirmasi.";
+            $notification_message = "Permintaan Top-Up Anda sebesar Rp. " . number_format($amount, 2) . " telah dikonfirmasi. Saldo telah di tambahkan.";
         }
 
         // Menampilkan lonceng hanya jika statusnya bukan pending dan notification_viewed adalah 0
