@@ -11,8 +11,8 @@
 
 session_start();
 
-include '/www/radiusbilling/views/header.php';
-require_once '/www/radiusbilling/config/database.php';
+include '/www/raddash/views/header.php';
+require_once '/www/raddash/config/database.php';
 
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
@@ -53,7 +53,7 @@ $db->close();
                     <div class="card-body">
                         <?php if ($pendingCount > 0): ?>
                             <p>You have <?php echo htmlspecialchars($pendingCount); ?> pending top-up request(s).</p>
-                            <a href="/radiusbilling/transactions/topup.php" class="btn btn-primary">View Top-Up Requests</a>
+                            <a href="/raddash/transactions/topup.php" class="btn btn-primary">View Top-Up Requests</a>
                         <?php else: ?>
                             <p class="text-success">No pending top-up requests at the moment.</p>
                         <?php endif; ?>
