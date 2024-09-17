@@ -15,8 +15,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include '/www/radiusbilling/views/header.php';
-require_once '/www/radiusbilling/config/database.php';
+include '/www/raddash/views/header.php';
+require_once '/www/raddash/config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
@@ -33,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['is_admin'] ? 'admin' : 'customer';
         if ($user['is_admin']) {
-            header('Location: /radiusbilling/views/admin.php');
+            header('Location: /raddash/views/admin.php');
         } else {
-            header('Location: /radiusbilling/views/dashboard.php');
+            header('Location: /raddash/views/dashboard.php');
         }
         exit();
     } else {
