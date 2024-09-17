@@ -16,8 +16,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include '/www/radiusbilling/views/header.php';
-require_once '/www/radiusbilling/config/database.php';
+include '/www/raddash/views/header.php';
+require_once '/www/raddash/config/database.php';
 
 $error = '';
 $success = '';
