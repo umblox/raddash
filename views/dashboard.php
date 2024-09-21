@@ -171,6 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <?php if ($role !== 'admin'): ?>
             <a href="/raddash/transactions/topup.php" class="btn btn-primary">Top Up</a>
             <a href="/raddash/transactions/purchase.php" class="btn btn-secondary">Purchase Plan</a>
+            <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
+
         <?php endif; ?>
 
         <a href="logout.php" class="btn btn-danger">Logout</a>
