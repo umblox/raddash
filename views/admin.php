@@ -66,6 +66,7 @@ $db->close();
                         <?php endif; ?>
                     </div>
                     <div class="card-footer text-center">
+                           <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
                         <a href="logout.php" class="btn btn-danger">Logout</a>
                     </div>
                 </div>
