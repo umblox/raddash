@@ -71,18 +71,18 @@
     .custom-button:hover:before {
         transform: translateX(100%) rotate(45deg); /* Efek highlight saat hover */
     }
-    <style>
+    </style>
     ```
      > Sumber kode html dari mas [ʜᴇᴍᴋᴇʀ ғʀᴏᴍ ᴘᴀʟᴇsᴛɪɴᴇ 𝕿𝖆𝖓𝖙𝖊](https://t.me/mutiara_wrt/1/15005)
 
 7. Coba register lagi sebagai akun pelanggan, lalu lakukan request topup.
 8. Login lagi sebagai admin untuk melihat request topup dan mengambil tindakan konfirmasi jika sudah menerima pembayaran atau tolak jika tidak menerima pembayaran.
 9. Juga akan update biar admin bisa konfirmasi topup melalui admin.
+10. Setting prefix voucher di config/prefix.php sesuaikan prefix yang di inginkan dan sesuaikan dengan nama plan.
+11. Wajib menyamakan antara nama profile di **Management -> Profiles** dan nama plans di **Billing -> Plans** pada konfigurasi daloradius.
 
     > Untuk Radius Monitor kemungkinan bisa mengabaikan step 11.
     
-10. Setting prefix voucher di config/prefix.php sesuaikan prefix yang di inginkan dan sesuaikan dengan nama plan.
-11. Wajib menyamakan antara nama profile di **Management -> Profiles** dan nama plans di **Billing -> Plans** pada konfigurasi daloradius.
 
 ### To Do Next Update
 - Notif telegram saat ada pelanggan request topup maupun saat pelanggan membeli voucher.
