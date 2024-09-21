@@ -3,7 +3,7 @@ Minimalis billing dashboard pelanggan Arneta.ID
 Support untuk daloradius management, belum nyoba untuk RadMon/Radius Monitor
 Fix = Menerapkan keberadaan voucher sesuai plan dan profile
 Apa yang harus di lakukan :
-
+-1. Akun admin = username: raddash password: 12345678
 0. Rename 3 file yang ada di folder config, hapus .default nya
 1. Masuk ke database radius lalu import radiusbilling.sql. jika pernah menginstall radiusbot dari saya, hal ini tidak perlu di lakukan
 2. Register 1 akun untuk admin
