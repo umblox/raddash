@@ -12,13 +12,12 @@
     opkg update && opkg install git git-http && cd /www && git clone https://github.com/umblox/raddash
     ```
 2. Masuk ke folder `/www/raddash/config` dengan **tinyfm atau sftp**, lalu hapus kata `.default` dari nama-nama file yang ada dalam folder tersebut.
-3. Masuk ke `database radius` lalu import `radiusbilling.sql`.
+3. Masuk ke `database radius` lalu import `raddash.sql`.
 
     > Abaikan step ke 3 jika sudah pernah memasang **radiusbot** dari Arneta.ID
 
-4. Register 1 akun untuk `admin`.
-5. Kembali ke `database radius` dan buka table `users`. edit akun yang akan di jadikan admin tadi, lalu setting kolom `is_admin` menjadi 1.
-6. Pasang `url raddash` di `loginpage` agar mudah di akses pelanggan, silahkan sesuaikan kode html dibawah ini untuk dimasukkan ke file login page
+4. Akun admin = `raddash` : `12345678`
+5. Pasang `url raddash` di `loginpage` agar mudah di akses pelanggan, silahkan sesuaikan kode html dibawah ini untuk dimasukkan ke file login page
 
    Kode tombol beli voucher, letakkan di dalam tag `<body>`:
 
@@ -75,15 +74,11 @@
     ```
      > Sumber kode html dari mas [ʜᴇᴍᴋᴇʀ ғʀᴏᴍ ᴘᴀʟᴇsᴛɪɴᴇ 𝕿𝖆𝖓𝖙𝖊](https://t.me/mutiara_wrt/1/15005)
 
-7. Coba register lagi sebagai akun pelanggan, lalu lakukan request topup.
-8. Login lagi sebagai admin untuk melihat request topup dan mengambil tindakan konfirmasi jika sudah menerima pembayaran atau tolak jika tidak menerima pembayaran.
-9. Juga akan update biar admin bisa konfirmasi topup melalui admin.
-10. Setting prefix voucher di config/prefix.php sesuaikan prefix yang di inginkan dan sesuaikan dengan nama plan.
-11. Wajib menyamakan antara nama profile di **Management -> Profiles** dan nama plans di **Billing -> Plans** pada konfigurasi daloradius.
+6. Setting prefix voucher di config/prefix.php sesuaikan prefix yang di inginkan dan sesuaikan dengan nama plan.
+7. Wajib menyamakan antara nama profile di **Management -> Profiles** dan nama plans di **Billing -> Plans** pada konfigurasi daloradius.
 
-    > Untuk Radius Monitor kemungkinan bisa mengabaikan step 11.
+    > Untuk Radius Monitor kemungkinan bisa mengabaikan step 7
     
-12. Admin default = raddash : 12345678
 ### To Do Next Update
 - Notif telegram saat ada pelanggan request topup maupun saat pelanggan membeli voucher.
 - Kombinasi dengan Radius Monitor.
