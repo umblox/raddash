@@ -79,7 +79,7 @@
 8. Login lagi sebagai admin untuk melihat request topup dan mengambil tindakan konfirmasi jika sudah menerima pembayaran atau tolak jika tidak menerima pembayaran.
 9. Juga akan update biar admin bisa konfirmasi topup melalui admin.
 
-    > Untuk Radius Monitor kemungkinan bisa mengabaikan step 10.
+    > Untuk Radius Monitor kemungkinan bisa mengabaikan step 11.
     
 10. Setting prefix voucher di config/prefix.php sesuaikan prefix yang di inginkan dan sesuaikan dengan nama plan.
 11. Wajib menyamakan antara nama profile di **Management -> Profiles** dan nama plans di **Billing -> Plans** pada konfigurasi daloradius.
