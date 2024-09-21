@@ -17,7 +17,7 @@ CREATE TABLE `topup_requests` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_topup_request` (`username`,`amount`,`created_at`),
   KEY `idx_username_status` (`username`,`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=284 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `users`;
@@ -32,7 +32,10 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `telegram_id` (`telegram_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
+TRUNCATE `users`;
+INSERT INTO `users` (`id`, `telegram_id`, `username`, `password`, `balance`, `whatsapp_number`, `is_admin`) VALUES
+(1,	1111111111,	'raddash',	'12345678',	13000.00,	'628585858585',	1);
 
--- 2024-09-12 12:41:49
+-- 2024-09-21 15:49:37
