@@ -30,7 +30,13 @@ $db = getDbConnection();
 
 // Cek apakah admin mencoba mengakses halaman ini
 if ($role === 'admin') {
-    header('Location: admin.php');
+    // Tambahkan alert dengan countdown
+    echo "<script>
+            alert('Hayo lho min, mau ngapain?');
+            setTimeout(function() {
+                window.location.href = 'admin.php';
+            }, 3000); // 3000 ms = 3 detik
+          </script>";
     exit();
 }
 
@@ -171,6 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <?php if ($role !== 'admin'): ?>
             <a href="/raddash/transactions/topup.php" class="btn btn-primary">Top Up</a>
             <a href="/raddash/transactions/purchase.php" class="btn btn-secondary">Purchase Plan</a>
+            <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
+
         <?php endif; ?>
 
         <a href="logout.php" class="btn btn-danger">Logout</a>

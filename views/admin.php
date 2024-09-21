@@ -10,12 +10,19 @@
 */
 
 session_start();
+ob_start(); // Buffer output
 
 include '/www/raddash/views/header.php';
 require_once '/www/raddash/config/database.php';
 
-if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
+// Cek apakah pengguna sudah login dan memiliki akses admin
+if (!isset($_SESSION['username'])) {
     header('Location: login.php');
+    exit();
+} elseif ($_SESSION['role'] !== 'admin') {
+    echo "<div class='alert alert-danger text-center'>Hanya admin yang bisa mengakses halaman ini.</div>";
+    echo "<a href='logout.php' class='btn btn-danger'>Logout</a>";
+    echo "<a href='dashboard.php' class='btn btn-primary'>Kembali ke Dashboard</a>";
     exit();
 }
 
@@ -59,6 +66,7 @@ $db->close();
                         <?php endif; ?>
                     </div>
                     <div class="card-footer text-center">
+                           <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
                         <a href="logout.php" class="btn btn-danger">Logout</a>
                     </div>
                 </div>
@@ -67,3 +75,7 @@ $db->close();
     </div>
 </body>
 </html>
+
+<?php
+ob_end_flush(); // Flush output buffer
+?>
