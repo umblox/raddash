@@ -83,7 +83,7 @@
 
     > Untuk Radius Monitor kemungkinan bisa mengabaikan step 11.
     
-
+12. Admin default = raddash : 12345678
 ### To Do Next Update
 - Notif telegram saat ada pelanggan request topup maupun saat pelanggan membeli voucher.
 - Kombinasi dengan Radius Monitor.
