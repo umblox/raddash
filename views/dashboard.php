@@ -30,7 +30,13 @@ $db = getDbConnection();
 
 // Cek apakah admin mencoba mengakses halaman ini
 if ($role === 'admin') {
-    header('Location: admin.php');
+    // Tambahkan alert dengan countdown
+    echo "<script>
+            alert('Hayo lho min, mau ngapain?');
+            setTimeout(function() {
+                window.location.href = 'admin.php';
+            }, 3000); // 3000 ms = 3 detik
+          </script>";
     exit();
 }
 
