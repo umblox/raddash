@@ -1,6 +1,7 @@
 ## Radius Dashboard Management
 
-## Katalog
+### Katalog
+- [Katalog](#Katalog)
 - [Informasi dan Penjelasan](#Informasi)
 - [Instalasi Radius Billing](#Instalasi)
 - [Pembaruan Radius Billing](#Pembaruan)
