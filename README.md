@@ -71,7 +71,7 @@
     .custom-button:hover:before {
         transform: translateX(100%) rotate(45deg); /* Efek highlight saat hover */
     }
-    <style>
+    </style>
     ```
      > Sumber kode html dari mas [ʜᴇᴍᴋᴇʀ ғʀᴏᴍ ᴘᴀʟᴇsᴛɪɴᴇ 𝕿𝖆𝖓𝖙𝖊](https://t.me/mutiara_wrt/1/15005)
 
