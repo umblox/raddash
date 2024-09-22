@@ -14,7 +14,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '/www/raddash/config/database.php';
+require_once '../config/database.php';
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['username'])) {
@@ -112,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,8 +121,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="/raddash/assets/css/bootstrap.min.css">
     <style>
         body {
-            padding-top: 5px; /* Mengatur padding atas untuk menghindari header fixed */
+            padding-top: 5px;
+            /* Mengatur padding atas untuk menghindari header fixed */
         }
+
         .notification {
             display: none;
             background-color: #f1f1f1;
@@ -131,40 +134,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             top: 60px;
             right: 10px;
             width: 300px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+
         .notification.show {
             display: block;
         }
+
         .bell-icon {
             font-size: 24px;
             cursor: pointer;
             margin-left: 10px;
             color: #888;
         }
+
         .bell-icon.active {
             color: red;
         }
+
         .container {
             margin-top: 20px;
         }
+
         .btn-custom {
             margin-right: 10px;
         }
     </style>
 </head>
+
 <body>
-    <?php include '/www/raddash/views/header.php'; ?>
+    <?php include 'header.php'; ?>
 
     <div class="container">
         <h1>Selamat Datang</h1>
         <p>Hello, <?php echo htmlspecialchars($username); ?>!</p>
-        
+
         <?php if ($show_bell): ?>
             <span id="bell" class="bell-icon active">🔔</span>
             <span id="notification_count"><?php echo $notification_count; ?> pesan baru</span>
         <?php endif; ?>
-        
+
         <?php if ($notification_message_encoded): ?>
             <div id="notification" class="notification">
                 <p><?php echo $notification_message_encoded; ?></p>
@@ -222,4 +231,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
     </script>
 </body>
+
 </html>

@@ -14,8 +14,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../config/database.php';
-require_once '../telegram/functions.php';
+require_once '/www/raddash/config/database.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -51,8 +50,7 @@ $stmt->close();
 $isAdmin = $is_admin == 1;
 
 // Fungsi untuk mendapatkan saldo pengguna
-function getUserBalance($username)
-{
+function getUserBalance($username) {
     global $db;
 
     $query = 'SELECT balance FROM users WHERE username = ?';
@@ -70,8 +68,7 @@ function getUserBalance($username)
 }
 
 // Fungsi untuk mengirim notifikasi (implementasikan sesuai dengan kebutuhan Anda)
-function sendNotification($username, $message)
-{
+function sendNotification($username, $message) {
     // Implementasikan pengiriman notifikasi sesuai dengan sistem yang Anda gunakan
 }
 
@@ -127,15 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isAdmin && isset($_POST['amount']
     $stmt->bind_param('isd', $user_id, $username, $amount);
     $stmt->execute();
     $stmt->close();
-
-    // Buat pesan notifikasi
-    $message = "Permintaan Top-Up Baru:\n";
-    $message .= "Username: @$username\n";
-    $message .= "Jumlah: Rp " . number_format($amount, 0, ',', '.') . "\n";
-    $message .= "Status: Pending";
-
-    // Kirim notifikasi ke admin
-    sendTelegramNotification($message);
 
     $_SESSION['status_message'] = "Permintaan top-up sebesar $amount kredit sedang menunggu konfirmasi admin.";
     header('Location: /raddash/transactions/topup.php');
@@ -273,7 +261,6 @@ if (!$isAdmin) {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -282,22 +269,17 @@ if (!$isAdmin) {
     <link rel="stylesheet" href="/raddash/assets/css/bootstrap.min.css">
     <style>
         .topup-form-container {
-            max-width: 400px;
-            /* Membatasi lebar form */
-            margin: 0 auto;
-            /* Menempatkan form di tengah */
+            max-width: 400px; /* Membatasi lebar form */
+            margin: 0 auto; /* Menempatkan form di tengah */
             padding: 20px;
-            background-color: #d0efff;
-            /* Latar belakang biru muda */
+            background-color: #d0efff; /* Latar belakang biru muda */
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
         .topup-form-container label {
             font-weight: bold;
             color: blue;
         }
-
         .btn-custom {
             background-color: #007bff;
             color: white;
@@ -305,13 +287,11 @@ if (!$isAdmin) {
             font-size: 16px;
             border-radius: 5px;
         }
-
         .btn-custom:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
-
 <body>
     <header>
         <!-- Menggunakan Bootstrap class untuk styling header -->
@@ -359,27 +339,27 @@ if (!$isAdmin) {
                         <button type="submit" class="btn btn-primary">Kembali ke Dashboard</button>
                     </form>
                 <?php else: ?>
-                    <div class="container mt-5">
-                        <div class="topup-form-container">
-                            <form action="topup.php" method="POST">
-                                <div class="form-group text-center">
-                                    <label for="amount">Jumlah Top-Up:</label>
-                                    <select id="amount" name="amount" class="form-control" required>
-                                        <option value="3000">Rp 3,000</option>
-                                        <option value="5000">Rp 5,000</option>
-                                        <option value="10000">Rp 10,000</option>
-                                        <option value="20000">Rp 20,000</option>
-                                        <option value="50000">Rp 50,000</option>
-                                        <option value="100000">Rp 100,000</option>
-                                    </select>
-                                </div>
-                                <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-custom">Kirim Permintaan</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                <?php endif; ?>
+    <div class="container mt-5">
+        <div class="topup-form-container">
+            <form action="topup.php" method="POST">
+                <div class="form-group text-center">
+                    <label for="amount">Jumlah Top-Up:</label>
+                    <select id="amount" name="amount" class="form-control" required>
+                        <option value="3000">Rp 3,000</option>
+                        <option value="5000">Rp 5,000</option>
+                        <option value="10000">Rp 10,000</option>
+                        <option value="20000">Rp 20,000</option>
+                        <option value="50000">Rp 50,000</option>
+                        <option value="100000">Rp 100,000</option>
+                    </select>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-custom">Kirim Permintaan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+            <?php endif; ?>
             <?php endif; ?>
         </div>
     </header>

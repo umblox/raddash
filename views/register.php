@@ -16,8 +16,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include '/www/raddash/views/header.php';
-require_once '/www/raddash/config/database.php';
+include 'header.php';
+require_once '../config/database.php';
 
 $error = '';
 $success = '';
@@ -49,6 +49,7 @@ ob_end_flush();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
@@ -59,6 +60,7 @@ ob_end_flush();
         }
     </style>
 </head>
+
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -68,8 +70,12 @@ ob_end_flush();
                         <h4>Register</h4>
                     </div>
                     <div class="card-body">
-                        <?php if ($success) { echo "<div class='alert alert-success'>$success</div>"; } ?>
-                        <?php if ($error) { echo "<div class='alert alert-danger'>$error</div>"; } ?>
+                        <?php if ($success) {
+                            echo "<div class='alert alert-success'>$success</div>";
+                        } ?>
+                        <?php if ($error) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        } ?>
                         <form method="post" action="register.php">
                             <div class="form-group">
                                 <label for="username">Username:</label>
@@ -109,4 +115,5 @@ ob_end_flush();
         }
     </script>
 </body>
+
 </html>

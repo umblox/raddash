@@ -16,13 +16,13 @@ error_reporting(E_ALL);
 
 // Redirect jika pengguna belum login
 if (!isset($_SESSION['username'])) {
-    header("Location: /raddash/views/login.php");
+    header("Location: ../views/login.php");
     exit();
 }
 
-include '/www/raddash/views/header.php';
-require '/www/raddash/config/database.php';  // Menghubungkan dengan konfigurasi database
-require '/www/raddash/config/prefix.php';    // Menghubungkan dengan konfigurasi prefix voucher
+include '../views/header.php';
+require '../config/database.php';  // Menghubungkan dengan konfigurasi database
+require '../config/prefix.php';    // Menghubungkan dengan konfigurasi prefix voucher
 
 // Mengaktifkan error reporting untuk debugging
 ini_set('display_errors', 1);
@@ -41,7 +41,8 @@ if (!isset($_SESSION['transaction_token'])) {
 $transaction_token = $_SESSION['transaction_token'];
 
 // Fungsi untuk membuat kode voucher dengan prefix yang sesuai
-function generate_voucher_code($planName, $connection) {
+function generate_voucher_code($planName, $connection)
+{
     do {
         $prefix = getVoucherPrefix($planName); // Mengambil prefix dari file konfigurasi
         $random_part = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 5);
@@ -96,11 +97,11 @@ if ($action == 'confirm' && !empty($plan_id)) {
 } elseif ($action == 'purchase' && !empty($plan_id) && !empty($telegram_username)) {
     // Cek token untuk mencegah double purchase
     if (!isset($_GET['token']) || $_GET['token'] !== $_SESSION['transaction_token']) {
-    echo '<p>Token transaksi tidak valid atau telah kadaluarsa.</p>';
-    echo '<p>Jika saldo Anda tidak terpotong dan voucher belum muncul, Anda bisa mengulangi proses pembelian.</p>';
+        echo '<p>Token transaksi tidak valid atau telah kadaluarsa.</p>';
+        echo '<p>Jika saldo Anda tidak terpotong dan voucher belum muncul, Anda bisa mengulangi proses pembelian.</p>';
 
-    // Tombol kembali ke dashboard
-    echo '<a href="/raddash/views/dashboard.php" class="btn btn-primary">Kembali ke Dashboard</a>';
+        // Tombol kembali ke dashboard
+        echo '<a href="/raddash/views/dashboard.php" class="btn btn-primary">Kembali ke Dashboard</a>';
         exit();
     }
 
@@ -142,19 +143,19 @@ if ($action == 'confirm' && !empty($plan_id)) {
         $connection->close();
         exit();
     } elseif ($user['balance'] < $plan['planCost']) {
-// Display the insufficient balance message with background
-echo '<div style="background-color: #ffdddd; padding: 15px; border-radius: 8px; border: 1px solid #ff5c5c; max-width: 400px; margin: 20px auto; text-align: center;">';
-echo '<p style="font-size: 16px; color: #d9534f;">Saldo Anda tidak mencukupi.</p>';
-echo '<p style="font-size: 16px; color: #333;">Saldo saat ini: <strong>' . htmlspecialchars($user['balance']) . '</strong></p>';
-echo '</div>';
+        // Display the insufficient balance message with background
+        echo '<div style="background-color: #ffdddd; padding: 15px; border-radius: 8px; border: 1px solid #ff5c5c; max-width: 400px; margin: 20px auto; text-align: center;">';
+        echo '<p style="font-size: 16px; color: #d9534f;">Saldo Anda tidak mencukupi.</p>';
+        echo '<p style="font-size: 16px; color: #333;">Saldo saat ini: <strong>' . htmlspecialchars($user['balance']) . '</strong></p>';
+        echo '</div>';
 
-// Rollback the transaction
-$connection->rollback(); 
+        // Rollback the transaction
+        $connection->rollback();
 
-// Display the rollback message with consistent styling
-echo '<div style="background-color: #f7f7f7; padding: 15px; border-radius: 8px; border: 1px solid #ccc; max-width: 400px; margin: 20px auto; text-align: center;">';
-echo '<p style="font-size: 16px; color: #555;">Transaksi telah dibatalkan.</p>';
-echo '</div>';
+        // Display the rollback message with consistent styling
+        echo '<div style="background-color: #f7f7f7; padding: 15px; border-radius: 8px; border: 1px solid #ccc; max-width: 400px; margin: 20px auto; text-align: center;">';
+        echo '<p style="font-size: 16px; color: #555;">Transaksi telah dibatalkan.</p>';
+        echo '</div>';
 
         $stmt->close();
         $connection->close();
@@ -215,18 +216,18 @@ echo '</div>';
         // URL Login Voucher
         $login_url = "http://10.10.10.1:3990/login?username=" . urlencode($voucher_code) . "&password=Accept";
 
-// Tampilkan pesan sukses dan tombol kembali
-echo '<div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; text-align: center;">';
-echo '<h1 style="font-size: 24px; color: #333; margin-bottom: 20px;">Pembelian Sukses</h1>';
-echo '<p style="font-size: 18px; color: #555; margin-bottom: 15px;">Klik untuk copy voucher :';
-echo '<span class="voucher-text" style="font-size: 18px; color: #007bff; cursor: pointer; background-color: #e0e0e0; padding: 5px 10px; border-radius: 4px;" onclick="copyVoucherText(this)">' . htmlspecialchars($voucher_code) . '</span>';
-echo '</p>';
-echo '<p style="font-size: 18px; color: #555; margin-bottom: 20px;">Sisa Saldo: <strong>' . htmlspecialchars($new_balance) . '</strong></p>';
-echo '<a href="' . htmlspecialchars($login_url) . '" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px; margin-right: 10px;">Login</a>';
-echo '<a href="/raddash/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
-echo '</div>';
+        // Tampilkan pesan sukses dan tombol kembali
+        echo '<div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; text-align: center;">';
+        echo '<h1 style="font-size: 24px; color: #333; margin-bottom: 20px;">Pembelian Sukses</h1>';
+        echo '<p style="font-size: 18px; color: #555; margin-bottom: 15px;">Klik untuk copy voucher :';
+        echo '<span class="voucher-text" style="font-size: 18px; color: #007bff; cursor: pointer; background-color: #e0e0e0; padding: 5px 10px; border-radius: 4px;" onclick="copyVoucherText(this)">' . htmlspecialchars($voucher_code) . '</span>';
+        echo '</p>';
+        echo '<p style="font-size: 18px; color: #555; margin-bottom: 20px;">Sisa Saldo: <strong>' . htmlspecialchars($new_balance) . '</strong></p>';
+        echo '<a href="' . htmlspecialchars($login_url) . '" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px; margin-right: 10px;">Login</a>';
+        echo '<a href="/raddash/views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Kembali ke Dashboard</a>';
+        echo '</div>';
 
-echo '<script>
+        echo '<script>
 function copyVoucherText(element) {
     var voucherText = element.innerText;
     
@@ -248,7 +249,6 @@ function copyVoucherText(element) {
     alert("Voucher copied: " + voucherText);
 }
 </script>';
-
     }
 
     $stmt->close();
@@ -265,9 +265,9 @@ function copyVoucherText(element) {
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
-echo '<div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #cce7ff; max-width: 400px; margin: 20px auto; text-align: center;">';
-echo '<p style="font-size: 18px; color: #555;">Saldo saat ini: <strong>' . htmlspecialchars($user['balance']) . '</strong></p>';
-echo '</div>';
+    echo '<div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #cce7ff; max-width: 400px; margin: 20px auto; text-align: center;">';
+    echo '<p style="font-size: 18px; color: #555;">Saldo saat ini: <strong>' . htmlspecialchars($user['balance']) . '</strong></p>';
+    echo '</div>';
 
     // Tampilkan daftar paket
     $stmt = $connection->prepare("SELECT id, planName, planCost FROM billing_plans WHERE planCost > 0");
@@ -278,15 +278,15 @@ echo '</div>';
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-echo '<div style="max-width: 400px; margin: 0 auto; padding: 15px;">';
-echo '<h2 style="font-size: 18px; color: #333; margin-bottom: 15px; text-align: center;">Pilih Paket yang Ingin Dibeli</h2>';
+        echo '<div style="max-width: 400px; margin: 0 auto; padding: 15px;">';
+        echo '<h2 style="font-size: 18px; color: #333; margin-bottom: 15px; text-align: center;">Pilih Paket yang Ingin Dibeli</h2>';
 
-while ($plan = $result->fetch_assoc()) {
-    echo '<div style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 12px; background-color: #257CFD; text-align: center;">';
-    echo '<p style="font-size: 14px; color: #fff; margin-bottom: 8px;">Paket: <strong>' . htmlspecialchars($plan['planName']) . '</strong></p>';
-    echo '<p style="font-size: 14px; color: #fff; margin-bottom: 12px;">Harga: <strong>' . htmlspecialchars($plan['planCost']) . '</strong></p>';
-    echo '<a href="purchase.php?action=confirm&plan_id=' . urlencode($plan['id']) . '" style="display: inline-block; padding: 8px 16px; color: #fff; background-color: #0ACA7D; text-decoration: none; border-radius: 4px; font-size: 14px;">Beli</a>';
-    echo '</div>';
+        while ($plan = $result->fetch_assoc()) {
+            echo '<div style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 12px; background-color: #257CFD; text-align: center;">';
+            echo '<p style="font-size: 14px; color: #fff; margin-bottom: 8px;">Paket: <strong>' . htmlspecialchars($plan['planName']) . '</strong></p>';
+            echo '<p style="font-size: 14px; color: #fff; margin-bottom: 12px;">Harga: <strong>' . htmlspecialchars($plan['planCost']) . '</strong></p>';
+            echo '<a href="purchase.php?action=confirm&plan_id=' . urlencode($plan['id']) . '" style="display: inline-block; padding: 8px 16px; color: #fff; background-color: #0ACA7D; text-decoration: none; border-radius: 4px; font-size: 14px;">Beli</a>';
+            echo '</div>';
         }
     } else {
         echo 'Tidak ada paket yang tersedia.';
@@ -305,28 +305,28 @@ while ($plan = $result->fetch_assoc()) {
 
 
     if ($result->num_rows > 0) {
-echo '<div style="max-width: 400px; margin: 0 auto; padding: 15px;">';
-echo '<h2 style="font-size: 18px; color: #333; margin-bottom: 15px; text-align: center;">Tiga Voucher Terakhir Anda</h2>';
-echo '<ul style="list-style-type: none; padding: 0; margin: 0;">';
+        echo '<div style="max-width: 400px; margin: 0 auto; padding: 15px;">';
+        echo '<h2 style="font-size: 18px; color: #333; margin-bottom: 15px; text-align: center;">Tiga Voucher Terakhir Anda</h2>';
+        echo '<ul style="list-style-type: none; padding: 0; margin: 0;">';
 
-while ($voucher = $result->fetch_assoc()) {
-    echo '<li style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #0ACA7D; text-align: center;">';
-    
-    // Label for voucher
-    echo '<p style="font-size: 16px; color: #ffffff; margin-bottom: 8px;">Klik untuk copy voucher </p>';
-    
-    // Voucher code that is clickable and copyable
-    echo '<span class="voucher-text" style="font-size: 16px; color: #fff; cursor: pointer; background-color: #fff; color: #0ACA7D; padding: 5px 10px; border-radius: 5px;" onclick="copyVoucherText(this)">' . htmlspecialchars($voucher['username']) . '</span>';
-    
-    // Date and spacing
-    echo '<p style="font-size: 14px; color: #ffffff; margin-top: 10px;">Tanggal beli : <strong>' . htmlspecialchars($voucher['creationdate']) . '</strong></p>';
-    echo '</li>';
-}
+        while ($voucher = $result->fetch_assoc()) {
+            echo '<li style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background-color: #0ACA7D; text-align: center;">';
 
-echo '</ul>';
-echo '</div>';
+            // Label for voucher
+            echo '<p style="font-size: 16px; color: #ffffff; margin-bottom: 8px;">Klik untuk copy voucher </p>';
 
-echo '<script>
+            // Voucher code that is clickable and copyable
+            echo '<span class="voucher-text" style="font-size: 16px; color: #fff; cursor: pointer; background-color: #fff; color: #0ACA7D; padding: 5px 10px; border-radius: 5px;" onclick="copyVoucherText(this)">' . htmlspecialchars($voucher['username']) . '</span>';
+
+            // Date and spacing
+            echo '<p style="font-size: 14px; color: #ffffff; margin-top: 10px;">Tanggal beli : <strong>' . htmlspecialchars($voucher['creationdate']) . '</strong></p>';
+            echo '</li>';
+        }
+
+        echo '</ul>';
+        echo '</div>';
+
+        echo '<script>
 function copyVoucherText(element) {
     var voucherText = element.innerText;
     
@@ -348,7 +348,6 @@ function copyVoucherText(element) {
     alert("Voucher copied: " + voucherText);
 }
 </script>';
-
     } else {
         echo 'Tidak ada voucher terbaru.';
     }
@@ -360,4 +359,3 @@ function copyVoucherText(element) {
     $stmt->close();
     $connection->close();
 }
-?>

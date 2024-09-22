@@ -12,8 +12,8 @@
 session_start();
 ob_start(); // Buffer output
 
-include '/www/raddash/views/header.php';
-require_once '/www/raddash/config/database.php';
+include '../views/header.php';
+require_once '../config/database.php';
 
 // Cek apakah pengguna sudah login dan memiliki akses admin
 if (!isset($_SESSION['username'])) {
@@ -44,10 +44,12 @@ $db->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="text-center">Welcome to Admin Panel</h1>
@@ -66,7 +68,11 @@ $db->close();
                         <?php endif; ?>
                     </div>
                     <div class="card-footer text-center">
+<<<<<<< Updated upstream
                            <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
+=======
+                        <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
+>>>>>>> Stashed changes
                         <a href="logout.php" class="btn btn-danger">Logout</a>
                     </div>
                 </div>
@@ -74,8 +80,13 @@ $db->close();
         </div>
     </div>
 </body>
+
 </html>
 
 <?php
 ob_end_flush(); // Flush output buffer
+<<<<<<< Updated upstream
 ?>
+=======
+?>
+>>>>>>> Stashed changes
