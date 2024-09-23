@@ -11,7 +11,7 @@
 
 
 // Global configuration
-define('BOT_TOKEN', '7530717438:AAFDpkb15BzqvjJx8-jNDT-Kg6JS0uhgbuo');
+define('BOT_TOKEN', '7530717438:AAxxx');
 define('ADMIN_CHAT_ID', '2123457759');
 
 // Database configuration array
@@ -35,4 +35,3 @@ define('DB_CONFIG', [
 //    }
 //    return $conn;
 //}
-?>
