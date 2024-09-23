@@ -10,9 +10,6 @@
 */
 
 // bot.php
-if (!defined('IN_BOT')) {
-    die('Direct access not allowed.');
-}
 
 require_once 'config.php';
 require_once 'functions.php';
