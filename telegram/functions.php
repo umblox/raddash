@@ -14,6 +14,7 @@
 require_once 'config.php'; // Pastikan config.php hanya di-include sekali
 
 // Fungsi untuk menghubungkan ke database
+if (!function_exists('getDbConnection')) {
 function getDbConnection() {
     $conn = new mysqli(
         DB_CONFIG['host'], 
@@ -123,5 +124,5 @@ function getAdminIds() {
     $conn->close();
     return $admins;
 }
-
+}
 ?>
