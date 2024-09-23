@@ -11,7 +11,7 @@
 
 // handlers/topup_handler.php
 
-require_once '/www/raddash/telegram/functions.php'; // Pastikan hanya di-include sekali
+require_once 'functions.php'; // Pastikan hanya di-include sekali
 
 function handleTopupCommand($chat_id, $username) {
     $conn = getDbConnection();
