@@ -1,17 +1,4 @@
 <?php
-<<<<<<< Updated upstream
-/*
-*******************************************************************************************************************
-* Warning!!!, Tidak untuk diperjual belikan!, Cukup pakai sendiri atau share kepada orang lain secara gratis
-*******************************************************************************************************************
-* Dibuat oleh Ikromul Umam https://t.me/arnetadotid
-*******************************************************************************************************************
-* © 2024 Arneta.ID By https://fb.me/umblox
-*******************************************************************************************************************
-*/
-
-=======
->>>>>>> Stashed changes
 // Mulai session untuk pelanggan
 session_start();
 
@@ -25,11 +12,7 @@ if (!isset($_SESSION['username'])) {
 $username = $_SESSION['username'];
 
 // Koneksi ke database
-<<<<<<< Updated upstream
-require_once '/www/raddash/config/database.php'; // Pastikan path ini benar
-=======
 require_once '../config/database.php'; // Pastikan path ini benar
->>>>>>> Stashed changes
 
 // Inisialisasi variabel
 $telegram_id = '';
@@ -155,10 +138,7 @@ $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 <head>
     <meta charset="UTF-8">
     <title>Update Profil</title>
@@ -166,23 +146,6 @@ $conn->close();
     <link rel="stylesheet" href="/raddash/assets/css/bootstrap.min.css">
     <style>
         body {
-<<<<<<< Updated upstream
-            padding-top: 50px; /* Memberi ruang di atas */
-            background-color: #f8f9fa; /* Warna latar belakang yang lembut */
-        }
-        .container {
-            max-width: 800px; /* Membatasi lebar kontainer */
-        }
-        .form-group {
-            margin-bottom: 1.5rem; /* Menambah jarak antar form group */
-        }
-        .btn-custom {
-            margin-right: 10px;
-        }
-        .edit-btn {
-            margin-left: 10px;
-        }
-=======
             padding-top: 50px;
             /* Memberi ruang di atas */
             background-color: #f8f9fa;
@@ -207,20 +170,14 @@ $conn->close();
             margin-left: 10px;
         }
 
->>>>>>> Stashed changes
         .input-display {
             background-color: #e9ecef;
         }
     </style>
 </head>
-<<<<<<< Updated upstream
-<body>
-    <?php include '/www/raddash/views/header.php'; ?>
-=======
 
 <body>
-    <?php include '../views/header.php'; ?>
->>>>>>> Stashed changes
+    <?php include 'header.php'; ?>
 
     <div class="container">
         <h2 class="mb-4 text-center">Update Profil</h2>
@@ -304,16 +261,9 @@ $conn->close();
                 <small class="form-text text-muted">Masukkan nomor tanpa awalan 0, contoh: 81234567890. Kosongkan jika tidak ingin mengubah.</small>
             </form>
         </div>
-
-        <!-- Tombol Logout dihapus sesuai permintaan -->
-
     </div>
 
-<<<<<<< Updated upstream
-    <?php include '/www/raddash/views/footer.php'; ?>
-=======
     <?php include '../views/footer.php'; ?>
->>>>>>> Stashed changes
 
     <!-- Bootstrap JS -->
     <script src="/raddash/assets/js/bootstrap.min.js"></script>
@@ -333,9 +283,5 @@ $conn->close();
         }
     </script>
 </body>
-<<<<<<< Updated upstream
-</html>
-=======
 
 </html>
->>>>>>> Stashed changes
