@@ -35,12 +35,30 @@ function generateVoucherCode($planName) {
 }
 
 
-// Fungsi untuk mendapatkan username dari chat ID
 function getUsernameFromChatId($chat_id) {
-    // Logika untuk mendapatkan username berdasarkan chat ID
-    // Misalnya dengan query ke database atau langsung dari data Telegram
-    // Sesuaikan dengan struktur data Anda
-    return ""; // Ganti dengan logika yang sesuai
+    $conn = getDbConnection();
+    if (!$conn) {
+        error_log("Connection failed in getUsernameFromChatId.");
+        return null;
+    }
+
+    $stmt = $conn->prepare("SELECT username FROM users WHERE telegram_id = ?");
+    if ($stmt === false) {
+        error_log("Prepare failed: " . $conn->error);
+        return null;
+    }
+    $stmt->bind_param("s", $chat_id);
+    $stmt->execute();
+    $stmt->bind_result($username);
+    if ($stmt->fetch()) {
+        $stmt->close();
+        $conn->close();
+        return $username;
+    } else {
+        $stmt->close();
+        $conn->close();
+        return null;
+    }
 }
 
 // Fungsi untuk menangani command /beli
@@ -146,26 +164,34 @@ function handleBeliPurchase($chat_id, $plan_id, $message_id) {
     $conn->query("INSERT INTO radusergroup (username, groupname, priority) VALUES ('{$voucher_code}', '{$plan['planName']}', 1)");
 
     $creation_date = date('Y-m-d H:i:s');
-    $creation_by = "{$telegram_username}@RadDashBot";
+    $creation_by = "{$username}@RadDashBot";
 
     $conn->query("INSERT INTO userinfo (username, creationdate, creationby) VALUES ('{$voucher_code}', '{$creation_date}', '{$creation_by}')");
     $conn->query("INSERT INTO userbillinfo (username, planName, paymentmethod, cash, creationdate, creationby) VALUES ('{$voucher_code}', '{$plan['planName']}', 'cash', '{$plan['planCost']}', '{$creation_date}', '{$creation_by}')");
 
-    // Notifikasi ke admin
-    notifyAdmins("🟢 Pengguna *{$telegram_username}* telah berhasil membeli voucher *{$plan['planName']}*.\nKode Voucher: *{$voucher_code}*\nSisa Saldo: *{$new_balance}*");
+// Pesan notifikasi ke admin
+$notification_message = "
+🟢 Pengguna: *{$username}* telah berhasil membeli voucher:
+- Paket: *{$plan['planName']}*
+- Kode Voucher: *{$voucher_code}*
+- Sisa Saldo: *{$new_balance}*
+";
 
-    // URL login
-    $login_url = "http://10.10.10.1:3990/login?username={$voucher_code}&password=Accept";
+// Mengirim notifikasi ke admin
+notifyAdmins($notification_message);
 
-    // Tombol login
-    $keyboard = [
+// URL login voucher
+$login_url = "http://10.10.10.1:3990/login?username={$voucher_code}&password=Accept";
+
+// Tombol login dengan voucher
+$keyboard = [
+    [
         [
-            [
-                'text' => "Login dengan Voucher",
-                'url' => $login_url
-            ]
+            'text' => "Login dengan Voucher",
+            'url' => $login_url
         ]
-    ];
+    ]
+];
 
     // Menghilangkan tombol konfirmasi dan menampilkan pesan hasil
     $final_message = "🟢Voucher Anda telah dibuat dengan kode: *{$voucher_code}*\nSisa saldo Anda sekarang: *{$new_balance}*";
