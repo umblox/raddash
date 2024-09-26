@@ -164,7 +164,7 @@ function handleBeliPurchase($chat_id, $plan_id, $message_id) {
     $conn->query("INSERT INTO radusergroup (username, groupname, priority) VALUES ('{$voucher_code}', '{$plan['planName']}', 1)");
 
     $creation_date = date('Y-m-d H:i:s');
-    $creation_by = "{$username}@RadDashBot";
+    $creation_by = "{$username}@RadDash";
 
     $conn->query("INSERT INTO userinfo (username, creationdate, creationby) VALUES ('{$voucher_code}', '{$creation_date}', '{$creation_by}')");
     $conn->query("INSERT INTO userbillinfo (username, planName, paymentmethod, cash, creationdate, creationby) VALUES ('{$voucher_code}', '{$plan['planName']}', 'cash', '{$plan['planCost']}', '{$creation_date}', '{$creation_by}')");
