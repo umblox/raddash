@@ -192,7 +192,7 @@ if ($action == 'confirm' && !empty($plan_id)) {
 
         // Insert ke userinfo
         $creation_date = date('Y-m-d H:i:s');
-        $creationby_value = $telegram_username . '@raddash';
+        $creationby_value = $telegram_username . '@RadDash';
         $stmt = $connection->prepare("INSERT INTO userinfo (username, creationdate, creationby) VALUES (?, ?, ?)");
         if (!$stmt) {
             die('Prepare failed: ' . $connection->error);
@@ -298,7 +298,7 @@ function copyVoucherText(element) {
         die('Prepare failed: ' . $connection->error);
     }
 
-    $createdby_value = $telegram_username . '@raddash';
+    $createdby_value = $telegram_username . '@RadDash';
     $stmt->bind_param('s', $createdby_value);
     $stmt->execute();
     $result = $stmt->get_result();
