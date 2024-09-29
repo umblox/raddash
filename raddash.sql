@@ -25,7 +25,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `telegram_id` bigint(20) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `balance` decimal(10,2) DEFAULT 0.00,
   `whatsapp_number` varchar(15) DEFAULT NULL,
   `is_admin` tinyint(1) DEFAULT 0,
