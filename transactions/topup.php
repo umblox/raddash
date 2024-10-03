@@ -14,6 +14,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once '/www/raddash/telegram/handlers/topup_handler.php';
+#require_once '/www/raddash/config/config.php';
 require_once '/www/raddash/config/database.php';
 
 ini_set('display_errors', 1);
@@ -69,7 +71,29 @@ function getUserBalance($username) {
 
 // Fungsi untuk mengirim notifikasi (implementasikan sesuai dengan kebutuhan Anda)
 function sendNotification($username, $message) {
-    // Implementasikan pengiriman notifikasi sesuai dengan sistem yang Anda gunakan
+    // Token bot Telegram
+    $token = 'BOT_TOKEN';
+
+    // ID chat admin
+    $adminChatId = 'ADMIN_CHAT_ID';
+
+    // URL API Telegram
+    $url = 'https://api.telegram.org/bot' . $token . '/sendMessage';
+
+    // Data notifikasi
+    $data = array(
+        'chat_id' => $adminChatId,
+        'text' => $message
+    );
+
+    // Kirim notifikasi
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($ch);
+    curl_close($ch);
 }
 
 // Tangani permintaan top-up jika POST
@@ -103,33 +127,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isAdmin && isset($_POST['amount']
         exit();
     }
 
-    // Ambil user_id dari username
-    $query = 'SELECT id FROM users WHERE username = ?';
-    $stmt = $db->prepare($query);
-    if ($stmt === false) {
-        die('Error prepare statement: ' . $db->error);
-    }
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $stmt->bind_result($user_id);
-    $stmt->fetch();
-    $stmt->close();
+// Ambil user_id dan telegram_id dari username
+$query = 'SELECT id, telegram_id FROM users WHERE username = ?';
+$stmt = $db->prepare($query);
+if ($stmt === false) {
+    die('Error prepare statement: ' . $db->error);
+}
+$stmt->bind_param('s', $username);
+$stmt->execute();
+$stmt->bind_result($user_id, $from_id);
+$stmt->fetch();
+$stmt->close();
 
-    // Masukkan permintaan top-up baru
-    $query = 'INSERT INTO topup_requests (user_id, username, amount, status) VALUES (?, ?, ?, "pending")';
-    $stmt = $db->prepare($query);
-    if ($stmt === false) {
-        die('Error prepare statement: ' . $db->error);
-    }
-    $stmt->bind_param('isd', $user_id, $username, $amount);
-    $stmt->execute();
-    $stmt->close();
+// Masukkan permintaan top-up baru
+$query = 'INSERT INTO topup_requests (user_id, username, amount, status) VALUES (?, ?, ?, "pending")';
+$stmt = $db->prepare($query);
+if ($stmt === false) {
+    die('Error prepare statement: ' . $db->error);
+}
+$stmt->bind_param('ssd', $from_id, $username, $amount);
+$stmt->execute();
+$stmt->close();
 
-    $_SESSION['status_message'] = "Permintaan top-up sebesar $amount kredit sedang menunggu konfirmasi admin.";
-    header('Location: /raddash/transactions/topup.php');
-    exit();
+// Notifikasi ke admin untuk konfirmasi
+$admin_message = "Permintaan top-up baru:\n\n";
+$admin_message .= "Telegram ID: $from_id\n";
+$admin_message .= "Username: @$username\n";
+$admin_message .= "Jumlah: $amount kredit\n\n";
+$admin_message .= "Silakan konfirmasi atau tolak permintaan ini.";
+
+// Dapatkan semua admin
+$admins = getAdminIds();
+
+foreach ($admins as $admin_id) {
+    $keyboard = [
+        [
+            ['text' => '✅ Terima', 'callback_data' => "admin_confirm_topup,$from_id,$amount"],
+            ['text' => '❌ Tolak', 'callback_data' => "admin_reject_topup,$from_id"]
+        ]
+    ];
+    $reply_markup = ['inline_keyboard' => $keyboard];
+
+    sendMessage($admin_id, $admin_message, $reply_markup);
 }
 
+// Definisikan amount yang dipilih user sebagai $selected_amount
+$selected_amount = $amount;
+
+$_SESSION['status_message'] = "Permintaan top-up sebesar $amount kredit sedang menunggu konfirmasi admin.";
+header('Location: /raddash/transactions/topup.php');
+exit();
+}
 // Jika admin, tangani konfirmasi atau penolakan top-up
 if ($isAdmin && isset($_GET['action']) && isset($_GET['username']) && isset($_GET['amount'])) {
     $action = $_GET['action'];
