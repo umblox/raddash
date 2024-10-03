@@ -298,7 +298,7 @@ Pastikan sudah melakukan pembayaran kepada admin sebesar $amount secara cash ata
         <!-- Menggunakan Bootstrap class untuk styling header -->
         <div class="bg-primary text-white text-center py-4">
             <?php if ($isAdmin): ?>
-                <h1 class="display-4">Permintaan Top-Up</h1>
+               <h4>Pilih nominal top-up:</h4>
                 <?php
                 $query = 'SELECT username, amount, created_at, status FROM topup_requests WHERE status = "pending" ORDER BY created_at DESC';
                 $result = $db->query($query);
@@ -342,22 +342,126 @@ Pastikan sudah melakukan pembayaran kepada admin sebesar $amount secara cash ata
                 <?php else: ?>
     <div class="container mt-5">
         <div class="topup-form-container">
-            <form action="topup.php" method="POST">
-                <div class="form-group text-center">
-                    <label for="amount">Jumlah Top-Up:</label>
-                    <select id="amount" name="amount" class="form-control" required>
-                        <option value="3000">Rp 3,000</option>
-                        <option value="5000">Rp 5,000</option>
-                        <option value="10000">Rp 10,000</option>
-                        <option value="20000">Rp 20,000</option>
-                        <option value="50000">Rp 50,000</option>
-                        <option value="100000">Rp 100,000</option>
-                    </select>
-                </div>
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-custom">Kirim Permintaan</button>
-                </div>
-            </form>
+<!-- Gantikan dropdown dengan daftar pilihan nominal -->
+<h4 style="color: #265ad4;">Pilih nominal top-up:</h4>
+<form id="topupForm" method="POST" action="topup.php"> <!-- Ganti dengan action yang sesuai -->
+    <input type="hidden" id="selectedAmount" name="amount" value=""> <!-- Menyimpan nominal yang dipilih -->
+    <?php
+    $defaultAmounts = [3000, 5000, 10000, 20000, 50000, 100000]; // Nominal yang tersedia
+    foreach ($defaultAmounts as $amount) {
+        echo '<div class="nominal-item">
+                <span class="nominal-amount">Rp ' . number_format($amount, 0, ',', '.') . '</span>
+                <button type="button" class="btn btn-primary pilih-nominal" data-amount="' . $amount . '">Pilih</button>
+              </div>';
+    }
+    ?>
+</form>
+
+<div id="konfirmasiPopup">
+    <div class="popup-content">
+        <h4>Konfirmasi Top-Up</h4>
+        <p>Anda yakin ingin melakukan top-up sebesar <span id="jumlahTopup"></span>?</p>
+        <button class="btn-confirm" style="background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Ya</button>
+        <button class="btn-cancel" style="background-color: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Tidak</button>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+.nominal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #265ad4;
+}
+
+.nominal-item:hover {
+    background-color: #35f06a;
+}
+
+.nominal-amount {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.pilih-nominal {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pilih-nominal:hover {
+    background-color: #0056b3;
+}
+
+.pilih-nominal:focus {
+    outline: none;
+}
+
+/* Popup CSS */
+#konfirmasiPopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#konfirmasiPopup .popup-content {
+    background-color: #265ad4;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+    text-align: center;
+}
+
+#konfirmasiPopup .popup-content h4 {
+    margin-bottom: 20px;
+}
+
+#konfirmasiPopup .btn-confirm, #konfirmasiPopup .btn-cancel {
+    margin: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+</style>
+
+<!-- Tambahkan JavaScript untuk menampilkan popup -->
+<script>
+document.querySelectorAll('.pilih-nominal').forEach(function(button) {
+    button.addEventListener('click', function() {
+        var amount = this.getAttribute('data-amount');
+        document.getElementById('jumlahTopup').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+        document.getElementById('selectedAmount').value = amount; // Menyimpan nominal terpilih di input hidden
+        document.getElementById('konfirmasiPopup').style.display = 'flex';
+    });
+});
+
+document.querySelector('.btn-cancel').addEventListener('click', function() {
+    document.getElementById('konfirmasiPopup').style.display = 'none';
+});
+
+document.querySelector('.btn-confirm').addEventListener('click', function() {
+    document.getElementById('topupForm').submit(); // Submit form setelah konfirmasi
+});
+</script>
+
+                    <form action="/raddash/views/dashboard.php" method="GET" class="mt-4">
+                        <button type="submit" class="btn btn-primary">Kembali ke Dashboard</button>
+                    </form>
+
         </div>
     </div>
             <?php endif; ?>
