@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
 *******************************************************************************************************************
 * Warning!!!, Tidak untuk diperjual belikan!, Cukup pakai sendiri atau share kepada orang lain secara gratis
@@ -12,8 +12,8 @@
 session_start();
 ob_start(); // Buffer output
 
-include '../views/header.php';
-require_once '../config/database.php';
+include '/www/raddash/views/header.php';
+require_once '/www/raddash/config/database.php';
 
 // Cek apakah pengguna sudah login dan memiliki akses admin
 if (!isset($_SESSION['username'])) {
@@ -25,31 +25,42 @@ if (!isset($_SESSION['username'])) {
     echo "<a href='dashboard.php' class='btn btn-primary'>Kembali ke Dashboard</a>";
     exit();
 }
-
-// Koneksi ke database
-$db = getDbConnection();
-
-// Cek jumlah permintaan top-up yang pending
-$query = 'SELECT COUNT(*) FROM topup_requests WHERE status = "pending"';
-$stmt = $db->prepare($query);
-if ($stmt === false) {
-    die('Error prepare statement: ' . $db->error);
-}
-$stmt->execute();
-$stmt->bind_result($pendingCount);
-$stmt->fetch();
-$stmt->close();
-$db->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
-</head>
+    <script>
+function checkPendingTopups() {
+    fetch('/raddash/transactions/check_pending_topups.php')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Tambahkan log ini untuk melihat data yang diterima dari server
+            const pendingCount = data.pendingCount;
+            const notification = document.getElementById('pendingNotification');
+            const viewTopupButton = document.getElementById('viewTopupButton');
 
+            if (pendingCount > 0) {
+                notification.innerHTML = `You have ${pendingCount} pending top-up request(s).`;
+                notification.style.display = 'block';
+                viewTopupButton.style.display = 'block'; // Menampilkan tombol jika ada request pending
+            } else {
+                notification.innerHTML = 'No pending top-up requests at the moment.';
+                notification.style.display = 'block';
+                viewTopupButton.style.display = 'none'; // Sembunyikan tombol jika tidak ada request pending
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+        // Lakukan polling setiap 10 detik
+        setInterval(checkPendingTopups, 10000);
+
+        // Panggil pertama kali saat halaman diload
+        window.onload = checkPendingTopups;
+    </script>
+</head>
 <body>
     <div class="container mt-5">
         <h1 class="text-center">Welcome to Admin Panel</h1>
@@ -60,19 +71,11 @@ $db->close();
                         <h4>Dashboard</h4>
                     </div>
                     <div class="card-body">
-                        <?php if ($pendingCount > 0): ?>
-                            <p>You have <?php echo htmlspecialchars($pendingCount); ?> pending top-up request(s).</p>
-                            <a href="/raddash/transactions/topup.php" class="btn btn-primary">View Top-Up Requests</a>
-                        <?php else: ?>
-                            <p class="text-success">No pending top-up requests at the moment.</p>
-                        <?php endif; ?>
+                        <p id="pendingNotification" style="display:none;"></p>
+                        <a href="/raddash/transactions/topup.php" id="viewTopupButton" class="btn btn-primary" style="display:none;">View Top-Up Requests</a>
                     </div>
                     <div class="card-footer text-center">
-<<<<<<< Updated upstream
-                           <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
-=======
                         <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
->>>>>>> Stashed changes
                         <a href="logout.php" class="btn btn-danger">Logout</a>
                     </div>
                 </div>
@@ -80,13 +83,8 @@ $db->close();
         </div>
     </div>
 </body>
-
 </html>
 
 <?php
 ob_end_flush(); // Flush output buffer
-<<<<<<< Updated upstream
 ?>
-=======
-?>
->>>>>>> Stashed changes
