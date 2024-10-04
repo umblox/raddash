@@ -145,7 +145,7 @@ $stmt = $db->prepare($query);
 if ($stmt === false) {
     die('Error prepare statement: ' . $db->error);
 }
-$stmt->bind_param('ssd', $from_id, $username, $amount);
+$stmt->bind_param('ssd', $user_id, $username, $amount);
 $stmt->execute();
 $stmt->close();
 
@@ -162,8 +162,8 @@ $admins = getAdminIds();
 foreach ($admins as $admin_id) {
     $keyboard = [
         [
-            ['text' => '✅ Terima', 'callback_data' => "admin_confirm_topup,$from_id,$amount"],
-            ['text' => '❌ Tolak', 'callback_data' => "admin_reject_topup,$from_id"]
+            ['text' => '✅ Terima', 'callback_data' => "admin_confirm_topup,$user_id,$amount"],
+            ['text' => '❌ Tolak', 'callback_data' => "admin_reject_topup,$user_id"]
         ]
     ];
     $reply_markup = ['inline_keyboard' => $keyboard];
@@ -196,7 +196,11 @@ if ($isAdmin && isset($_GET['action']) && isset($_GET['username']) && isset($_GE
         $stmt->bind_result($user_id);
         $stmt->fetch();
         $stmt->close();
-
+ // Hapus tombol konfirmasi di bot Telegram
+ //   $telegram_id = $user_id;
+ //   $message_id = $message_id;
+ //   editMessage($telegram_id, $message_id, "Permintaan top-up telah dikonfirmasi.");
+ //
         if ($user_id) {
             // Tambahkan saldo pengguna
             $query = 'UPDATE users SET balance = balance + ? WHERE username = ?';
@@ -240,7 +244,11 @@ if ($isAdmin && isset($_GET['action']) && isset($_GET['username']) && isset($_GE
         $stmt->bind_result($amount_found);
         $stmt->fetch();
         $stmt->close();
-
+ // Hapus tombol konfirmasi di bot Telegram
+ //   $telegram_id = $user_id;
+ //   $message_id = $message_id;
+ //   editMessage($telegram_id, $message_id, "Permintaan top-up telah ditolak.");
+ //
         if ($amount_found) {
             // Ubah status permintaan top-up
             $query = 'UPDATE topup_requests SET status = "rejected" WHERE username = ? AND amount = ? AND status = "pending"';
