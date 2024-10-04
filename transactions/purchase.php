@@ -300,7 +300,7 @@ while ($plan = $result->fetch_assoc()) {
         die('Prepare failed: ' . $connection->error);
     }
 
-    $createdby_value = $telegram_username . '@RadDash';
+    $createdby_value = $telegram_username.'@RadDash';
     $stmt->bind_param('s', $createdby_value);
     $stmt->execute();
     $result = $stmt->get_result();
