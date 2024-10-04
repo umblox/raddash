@@ -11,7 +11,7 @@
 
 // handlers/topup_handler.php
 
-require_once 'functions.php'; // Pastikan hanya di-include sekali
+require_once '/www/raddash/telegram/functions.php'; // Pastikan hanya di-include sekali
 
 function handleTopupCommand($chat_id, $username) {
     $conn = getDbConnection();
@@ -121,21 +121,35 @@ function handleUserTopupConfirmation($chat_id, $message_id, $from_id, $username,
     $conn = getDbConnection();
 
     // Cek apakah user masih terdaftar
-    $stmt = $conn->prepare("SELECT username FROM users WHERE telegram_id = ?");
-    $stmt->bind_param("s", $from_id);
-    $stmt->execute();
-    $stmt->bind_result($user_username);
-    if (!$stmt->fetch()) {
-        editMessage($chat_id, $message_id, "User tidak ditemukan. Silakan gunakan /start untuk mendaftar ❌.");
+    if ($from_id != null && $from_id != '') {
+        $stmt = $conn->prepare("SELECT id, username FROM users WHERE telegram_id = ?");
+        $stmt->bind_param("s", $from_id);
+        $stmt->execute();
+        $stmt->bind_result($user_id, $user_username);
+        if (!$stmt->fetch()) {
+            editMessage($chat_id, $message_id, "User  tidak ditemukan. Silakan gunakan /start untuk m endaftar ❌.");
+            $stmt->close();
+            $conn->close();
+            return;
+        }
         $stmt->close();
-        $conn->close();
-        return;
+    } else {
+        $stmt = $conn->prepare("SELECT id, username FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($user_id, $user_username);
+        if (!$stmt->fetch()) {
+            editMessage($chat_id, $message_id, "User   tidak ditemukan. Silakan gunakan /start untuk mendaftar ❌.");
+            $stmt->close();
+            $conn->close();
+            return;
+        }
+        $stmt->close();
     }
-    $stmt->close();
 
     // Cek apakah user memiliki permintaan topup pending
     $stmt = $conn->prepare("SELECT COUNT(*) FROM topup_requests WHERE user_id = ? AND status = 'pending'");
-    $stmt->bind_param("s", $from_id);
+    $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $stmt->bind_result($pending_count);
     $stmt->fetch();
@@ -149,13 +163,13 @@ function handleUserTopupConfirmation($chat_id, $message_id, $from_id, $username,
 
     // Simpan permintaan topup dengan status 'pending'
     $stmt = $conn->prepare("INSERT INTO topup_requests (user_id, username, amount, status) VALUES (?, ?, ?, 'pending')");
-    $stmt->bind_param("ssd", $from_id, $username, $selected_amount);
+    $stmt->bind_param("isd", $user_id, $username, $selected_amount);
     if ($stmt->execute()) {
         $stmt->close();
 
         // Notifikasi ke admin untuk konfirmasi
         $admin_message = "Permintaan top-up baru:\n\n";
-        $admin_message .= "Telegram ID: $from_id\n";
+        $admin_message .= "ID: $user_id\n";
         $admin_message .= "Username: @$username\n";
         $admin_message .= "Jumlah: $selected_amount kredit\n\n";
         $admin_message .= "Silakan konfirmasi atau tolak permintaan ini.";
@@ -166,8 +180,8 @@ function handleUserTopupConfirmation($chat_id, $message_id, $from_id, $username,
         foreach ($admins as $admin_id) {
             $keyboard = [
                 [
-                    ['text' => '✅ Terima', 'callback_data' => "admin_confirm_topup,$from_id,$selected_amount"],
-                    ['text' => '❌ Tolak', 'callback_data' => "admin_reject_topup,$from_id"]
+                    ['text' => '✅ Terima', 'callback_data' => "admin_confirm_topup,$user_id,$selected_amount"],
+                    ['text' => '❌ Tolak', 'callback_data' => "admin_reject_topup,$user_id"]
                 ]
             ];
             $reply_markup = ['inline_keyboard' => $keyboard];
@@ -185,7 +199,6 @@ function handleUserTopupConfirmation($chat_id, $message_id, $from_id, $username,
 
     $conn->close();
 }
-
 function handleAdminTopupConfirmation($chat_id, $message_id, $data_parts) {
     if (count($data_parts) < 2) {
         editMessage($chat_id, $message_id, "Data callback tidak valid.");
@@ -207,12 +220,12 @@ function handleAdminTopupConfirmation($chat_id, $message_id, $data_parts) {
         }
 
         // Ambil user info
-        $stmt = $conn->prepare("SELECT username, balance FROM users WHERE telegram_id = ?");
+        $stmt = $conn->prepare("SELECT id, username, balance FROM users WHERE id = ?");
         $stmt->bind_param("s", $user_id);
         $stmt->execute();
-        $stmt->bind_result($username, $current_balance);
+        $stmt->bind_result($user_id, $username, $current_balance);
         if (!$stmt->fetch()) {
-            editMessage($chat_id, $message_id, "User tidak ditemukan.");
+            editMessage($chat_id, $message_id, "User  tidak ditemukan.");
             $stmt->close();
             $conn->close();
             return;
@@ -221,7 +234,7 @@ function handleAdminTopupConfirmation($chat_id, $message_id, $data_parts) {
 
         // Update saldo user
         $new_balance = $current_balance + $amount;
-        $stmt = $conn->prepare("UPDATE users SET balance = ? WHERE telegram_id = ?");
+        $stmt = $conn->prepare("UPDATE users SET balance = ? WHERE id = ?");
         $stmt->bind_param("ds", $new_balance, $user_id);
         $stmt->execute();
         $stmt->close();
@@ -233,7 +246,16 @@ function handleAdminTopupConfirmation($chat_id, $message_id, $data_parts) {
         $stmt->close();
 
         // Notifikasi ke user
-        sendMessage($user_id, "Top-up sebesar <b>$amount</b> kredit telah dikonfirmasi oleh admin.\nSaldo Anda sekarang adalah <b>$new_balance</b> kredit ✅.");
+        $stmt = $conn->prepare("SELECT telegram_id FROM users WHERE id = ?");
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+        $stmt->bind_result($telegram_id);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($telegram_id != null && $telegram_id != '') {
+            sendMessage($telegram_id, "Top-up sebesar <b>$amount</b> kredit telah dikonfirmasi oleh admin.\nSaldo Anda sekarang adalah <b>$new_balance</b> kredit ✅.");
+        }
 
         // Edit pesan admin
         $message = "Top-up untuk pengguna <b>$user_id</b> (@$username) sebesar <b>$amount</b> telah dikonfirmasi.\nSaldo baru: <b>$new_balance</b> kredit ✅.";
@@ -260,7 +282,7 @@ function handleAdminTopupConfirmation($chat_id, $message_id, $data_parts) {
         $stmt->close();
 
         // Ambil saldo user
-        $stmt = $conn->prepare("SELECT balance FROM users WHERE telegram_id = ?");
+        $stmt = $conn->prepare("SELECT balance FROM users WHERE id = ?");
         $stmt->bind_param("s", $user_id);
         $stmt->execute();
         $stmt->bind_result($current_balance);
@@ -268,7 +290,16 @@ function handleAdminTopupConfirmation($chat_id, $message_id, $data_parts) {
         $stmt->close();
 
         // Notifikasi ke user
-        sendMessage($user_id, "Top-up sebesar <b>$amount</b> kredit telah ditolak oleh admin.\nSaldo Anda tetap: <b>$current_balance</b> kredit ❌.");
+        $stmt = $conn->prepare("SELECT telegram_id FROM users WHERE id = ?");
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+        $stmt->bind_result($telegram_id);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($telegram_id != null && $telegram_id != '') {
+            sendMessage($telegram_id, "Top-up sebesar <b>$amount</b> kredit telah ditolak oleh admin.\nSaldo Anda tetap: <b>$current_balance</b> kredit ❌.");
+        }
 
         // Edit pesan admin
         $message = "Top-up untuk pengguna <b>$user_id</b> (@$username) sebesar <b>$amount</b> telah ditolak.\nSaldo saat ini tetap: <b>$current_balance</b> kredit ❌.";
