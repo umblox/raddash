@@ -1,0 +1,37 @@
+#!/bin/sh /etc/rc.common
+
+# Petunjuk:
+# 1. Letakkan file ini di folder /etc/init.d/ dengan nama "raddashbot"
+# 2. Berikan hak akses eksekusi pada file ini dengan perintah:
+#    chmod +x /etc/init.d/raddashbot
+# 3. Untuk memulai bot, jalankan perintah:
+#    /etc/init.d/raddashbot start
+# 4. Untuk menghentikan bot, jalankan perintah:
+#    /etc/init.d/raddashbot stop
+
+START=99
+STOP=10
+
+start() {
+    if [ -f /var/run/raddashbot.pid ] && kill -0 $(cat /var/run/raddashbot.pid) 2>/dev/null; then
+        echo "Bot is already running with PID $(cat /var/run/raddashbot.pid)"
+        return 1
+    fi
+
+    echo "Starting bot..."
+    nohup php /www/raddash/telegram/arneta.php > /var/log/raddashbot.log 2>&1 &
+    BOT_PID=$!
+    echo $BOT_PID > /var/run/raddashbot.pid
+    echo "Bot started with PID $BOT_PID"
+}
+
+stop() {
+    echo "Stopping bot..."
+    if [ -f /var/run/raddashbot.pid ]; then
+        kill -9 $(cat /var/run/raddashbot.pid)
+        rm /var/run/raddashbot.pid
+        echo "Bot stopped."
+    else
+        echo "PID file not found."
+    fi
+}
