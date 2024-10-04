@@ -9,7 +9,10 @@
 *******************************************************************************************************************
 */
 
-// bot.php
+// arneta.php
+//if (!defined('IN_BOT')) {
+//    die('Direct access not allowed.');
+//}
 
 require_once 'config.php';
 require_once 'functions.php';
@@ -54,7 +57,7 @@ function runBot() {
                     } elseif ($text === '/topup') {
                         handleTopupCommand($chat_id, $username);
                     } elseif ($text === '/beli') {
-                        handleBeliCommand($chat_id, $username);
+                        handleBeliCommand($chat_id, $username, $message_id);
                     } elseif ($text === '/saldo') {
                         handleSaldoCommand($chat_id, $username);
                     }
