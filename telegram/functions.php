@@ -111,6 +111,15 @@ function editMessage($chat_id, $message_id, $text, $reply_markup = null) {
     curl_close($ch);
 }
 
+//Fungsi untuk mendapatkan message_id khusus untuk web billing bro
+function get_message_id($chat_id, $message_id) {
+    if (isset($message_id)) {
+        return $message_id;
+    } else {
+        return null;
+    }
+}
+
 // Fungsi untuk mengambil semua admin
 function getAdminIds() {
     $conn = getDbConnection();
