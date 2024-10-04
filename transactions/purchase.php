@@ -104,36 +104,62 @@ if ($action == 'confirm' && !empty($plan_id)) {
         exit();
     }
 
-    // Jika token valid, lanjutkan dengan proses transaksi
-    $connection->autocommit(FALSE); // Mulai transaksi
+// Jika token valid, lanjutkan dengan proses transaksi
+$connection->autocommit(FALSE); // Mulai transaksi
 
-    // Ambil informasi paket
-    $stmt = $connection->prepare("SELECT planName, planCost FROM billing_plans WHERE id = ?");
+// Ambil informasi paket
+$stmt = $connection->prepare("SELECT planName, planCost FROM billing_plans WHERE id = ?");
+if (!$stmt) {
+    die('Prepare failed: ' . $connection->error);
+}
+$stmt->bind_param('i', $plan_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$plan = $result->fetch_assoc();
+
+if (!$plan) {
+    echo 'Paket tidak ditemukan.<br>';
+    $connection->rollback(); // Batalkan transaksi
+    $stmt->close();
+    $connection->close();
+    exit();
+}
+
+// Periksa apakah paket Trial
+if (strpos($plan['planName'], 'Trial') !== false) {
+    // Periksa apakah user telah membeli paket Trial pada hari yang sama
+    $stmt = $connection->prepare("SELECT username FROM userinfo WHERE creationby = ? AND creationdate LIKE ?");
     if (!$stmt) {
         die('Prepare failed: ' . $connection->error);
     }
-    $stmt->bind_param('i', $plan_id);
+    $createdby_value = $telegram_username . '@RadDash';
+    $date_value = date('Y-m-d') . '%';
+    $stmt->bind_param('ss', $createdby_value, $date_value);
     $stmt->execute();
     $result = $stmt->get_result();
-    $plan = $result->fetch_assoc();
 
-    if (!$plan) {
-        echo 'Paket tidak ditemukan.<br>';
-        $connection->rollback(); // Batalkan transaksi
-        $stmt->close();
-        $connection->close();
-        exit();
+    while ($row = $result->fetch_assoc()) {
+        if (strpos($row['username'], 'trial') !== false) {
+            // Jika user telah membeli paket Trial pada hari yang sama, tampilkan pesan
+            echo '<div style="background-color: #ffdddd; padding: 15px; border-radius: 8px; border: 1px solid #ff5c5c; max-width: 400px; margin: 20px auto; text-align: center;">';
+            echo '<p style="font-size: 16px; color: #d9534f;">Anda telah membeli paket Trial pada hari ini. Silakan tunggu besok lagi untuk membeli paket Trial.</p>';
+            echo '<a href="../views/dashboard.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px; margin-right: 10px;">Kembali ke Beranda</a>';
+            echo '<a href="purchase.php" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px;">Pilih Paket Lain</a>';
+            echo '</div>';
+            exit();
+        }
     }
+}
 
-    // Periksa saldo pengguna berdasarkan username
-    $stmt = $connection->prepare("SELECT balance FROM users WHERE username = ?");
-    if (!$stmt) {
-        die('Prepare failed: ' . $connection->error);
-    }
-    $stmt->bind_param('s', $telegram_username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+// Periksa saldo pengguna berdasarkan username
+$stmt = $connection->prepare("SELECT balance FROM users WHERE username = ?");
+if (!$stmt) {
+    die('Prepare failed: ' . $connection->error);
+}
+$stmt->bind_param('s', $telegram_username);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 
     if (!$user) {
         echo 'Pengguna tidak ditemukan.<br>';
@@ -247,7 +273,7 @@ function copyVoucherText(element) {
     document.body.removeChild(tempInput);
 
     // Optional: Alert or show message confirming copy action
-    alert("Voucher copied: " + voucherText);
+    alert("Voucher di copy: "  + voucherText);
 }
 </script>';
 
@@ -272,7 +298,7 @@ echo '<p style="font-size: 18px; color: #555;">Saldo saat ini: <strong>' . htmls
 echo '</div>';
 
     // Tampilkan daftar paket
-    $stmt = $connection->prepare("SELECT id, planName, planCost FROM billing_plans WHERE planCost > 0");
+    $stmt = $connection->prepare("SELECT id, planName, planCost FROM billing_plans WHERE planCost >= 0");
     if (!$stmt) {
         die('Prepare failed: ' . $connection->error);
     }
@@ -300,7 +326,7 @@ while ($plan = $result->fetch_assoc()) {
         die('Prepare failed: ' . $connection->error);
     }
 
-    $createdby_value = $telegram_username.'@RadDash';
+    $createdby_value = $telegram_username . '@RadDash';
     $stmt->bind_param('s', $createdby_value);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -347,7 +373,7 @@ function copyVoucherText(element) {
     document.body.removeChild(tempInput);
 
     // Optional: Alert or show message confirming copy action
-    alert("Voucher copied: " + voucherText);
+    alert("Voucher di copy: "  +  voucherText);
 }
 </script>';
 
