@@ -25,23 +25,23 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Arahkan pengguna ke halaman yang sesuai berdasarkan perannya
 if ($role === 'admin') {
-    if ($uri === '/radiusbilling/') {
+    if ($uri === '/raddash/') {
         header('Location: views/admin.php'); // Arahkan ke halaman admin
         exit();
-    } elseif ($uri === '/radiusbilling/transactions/topup.php') {
+    } elseif ($uri === '/raddash/transactions/topup.php') {
         include 'views/topup_form.php';
-    } elseif ($uri === '/radiusbilling/transactions/purchase.php') {
+    } elseif ($uri === '/raddash/transactions/purchase.php') {
         include 'views/purchase_form.php';
     } else {
         echo "404 Not Found";
     }
 } elseif ($role === 'customer') {
-    if ($uri === '/radiusbilling/') {
+    if ($uri === '/raddash/') {
         header('Location: views/dashboard.php'); // Arahkan ke halaman pelanggan
         exit();
-    } elseif ($uri === '/radiusbilling/transactions/topup.php') {
+    } elseif ($uri === '/raddash/transactions/topup.php') {
         include 'views/topup_form.php';
-    } elseif ($uri === '/radiusbilling/transactions/purchase.php') {
+    } elseif ($uri === '/raddash/transactions/purchase.php') {
         include 'views/purchase_form.php';
     } else {
         echo "404 Not Found";
