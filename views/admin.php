@@ -75,6 +75,7 @@ function checkPendingTopups() {
                         <a href="/raddash/transactions/topup.php" id="viewTopupButton" class="btn btn-primary" style="display:none;">View Top-Up Requests</a>
                     </div>
                     <div class="card-footer text-center">
+                        <a href="users.php" class="btn btn-primary">Pelanggan</a>
                         <a href="/raddash/views/profile.php" class="btn btn-info">Profile</a>
                         <a href="logout.php" class="btn btn-danger">Logout</a>
                     </div>
