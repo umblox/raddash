@@ -62,13 +62,12 @@ function checkPendingTopups() {
     </script>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Welcome to Admin Panel</h1>
+    <div class="container mt-2">
         <div class="row justify-content-center mt-4">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card">
                     <div class="card-header bg-primary text-white text-center">
-                        <h4>Dashboard</h4>
+        <h4 class="text-center">Welcome to Admin Panel</h4>
                     </div>
                     <div class="card-body">
                         <p id="pendingNotification" style="display:none;"></p>
