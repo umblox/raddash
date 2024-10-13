@@ -1,15 +1,4 @@
 <?php 
-/*
-*******************************************************************************************************************
-* Warning!!!, Tidak untuk diperjual belikan!, Cukup pakai sendiri atau share kepada orang lain secara gratis
-*******************************************************************************************************************
-* Dibuat oleh Ikromul Umam https://t.me/arnetadotid
-*******************************************************************************************************************
-* © 2024 Arneta.ID By https://fb.me/umblox
-*******************************************************************************************************************
-*/
-
-<?php 
 ob_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -28,8 +17,8 @@ if (isset($_GET['delete_id'])) {
     }
 }
 
-// Cek jika ada request POST untuk update user
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_user'])) {
+// Cek jika ada request POST untuk edit user
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_user'])) {
     $id = htmlspecialchars($_POST['id']);
     $username = htmlspecialchars($_POST['username']);
     $telegram_id = htmlspecialchars($_POST['telegram_id']);
@@ -127,18 +116,18 @@ $hasil = mysqli_query($conn, $sql);
                     <td><?php echo htmlspecialchars($data["whatsapp_number"]); ?></td>
                     <td><?php echo htmlspecialchars($data["balance"]); ?></td>
                     <td>
-                        <button class="btn btn-warning" data-toggle="modal" data-target="#updateModal<?php echo $data['id']; ?>">Update</button>
+                        <button class="btn btn-warning" data-toggle="modal" data-target="#editModal<?php echo $data['id']; ?>">Edit</button>
                         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal<?php echo $data['id']; ?>">Delete</button>
                     </td>
                 </tr>
 
-                <!-- Update Modal -->
-                <div class="modal fade" id="updateModal<?php echo $data['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editModal<?php echo $data['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <form method="POST" action="">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="updateModalLabel">Update User</h5>
+                                    <h5 class="modal-title" id="editModalLabel">Edit User</h5>
                                 </div>
                                 <div class="modal-body">
                                     <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
@@ -161,7 +150,7 @@ $hasil = mysqli_query($conn, $sql);
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" name="update_user" class="btn btn-primary">Update User</button>
+                                    <button type="submit" name="edit_user" class="btn btn-primary">Edit User</button>
                                 </div>
                             </form>
                         </div>
