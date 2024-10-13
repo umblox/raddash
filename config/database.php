@@ -10,8 +10,7 @@
 */
 
 if (!function_exists('getDbConnection')) {
-    function getDbConnection()
-    {
+    function getDbConnection() {
         $host = '127.0.0.1';  // Ganti dengan host Anda
         $db = 'radius'; // Nama database Anda
         $user = 'radius';        // Nama pengguna database Anda
@@ -24,3 +23,7 @@ if (!function_exists('getDbConnection')) {
         return $conn;
     }
 }
+
+// Panggil fungsi untuk mendapatkan koneksi database
+$conn = getDbConnection();
+?>
