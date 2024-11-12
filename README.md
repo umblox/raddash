@@ -1,5 +1,13 @@
 ## Radius Dashboard Management
 
+### Katalog
+- [Katalog](#Katalog)
+- [Informasi dan Penjelasan](#Informasi)
+- [Instalasi Radius Billing](#Instalasi)
+- [Pembaruan Radius Billing](#Pembaruan)
+- [Rencana Update Fitur](#To-Do-Next-Update)
+- [Credits](#Credits)
+
 ### Informasi
 - Dashboard Pelanggan Untuk Billing Freeradius.
 - Mendukung daloradius management.
@@ -11,7 +19,12 @@
     ```sh
     opkg update && opkg install git git-http && cd /www && git clone https://github.com/umblox/raddash
     ```
-2. Masuk ke folder `/www/raddash/config` dengan **tinyfm atau sftp**, lalu hapus kata `.default` dari nama-nama file yang ada dalam folder tersebut.
+
+2. Masih di terminal, jalankan perintah dibawah ini untuk membuat user config:
+    ```sh
+    cd /www/raddash/config; for fn in *.default; do nm="$(echo $fn | sed 's/.default//')" && [ ! -f $nm ] && cp $fn $nm; done; cd /root
+    ```
+
 3. Masuk ke `database radius` lalu import `raddash.sql`.
 
     > Abaikan step ke 3 jika sudah pernah memasang **radiusbot** dari Arneta.ID
@@ -79,9 +92,18 @@
 
     > Untuk Radius Monitor kemungkinan bisa mengabaikan step 7
     
+### Pembaruan
+Untuk melakukan pembaruan **Radius Billing** jalankan step berikut:
+1. Jalankan SSH melalui Terminal/Termius/Putty/TTYD, lalu jalankan perintah dibawah ini:
+    ```sh
+    cd /www/raddash && git reset --hard && git pull && cd /root
+    ```
+2. Itu aja, lupa yang harus di restart apa.
+
 ### To Do Next Update
-- Notif telegram saat ada pelanggan request topup maupun saat pelanggan membeli voucher.
-- Kombinasi dengan Radius Monitor.
+- Notif telegram saat ada pelanggan request topup maupun.
+- Notif telegram saat pelanggan membeli voucher.
+- Kombinasi dan kompatibilitas dengan Radius Monitor.
 
 ### Credits
 - Owner raddash: [Arneta.ID](https://github.com/umblox/raddash)
